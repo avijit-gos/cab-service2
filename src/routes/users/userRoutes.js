@@ -18,7 +18,7 @@ const {
   deleteUserById,
   updateProfileStatus,deleteProfile,
   deleteProfileStatus
-} = require("../../controller/user/usercontroller");
+} = require("../../controller/user/userController");
 const authentication = require("../../middleware/authentication");
 const verifyUserEmail = require("../../middleware/verifyUserEmail");
 const verifyAdmin = require("../../middleware/verifyAdmin");
