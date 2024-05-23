@@ -438,7 +438,9 @@ class BookCabController {
 
   async getAllBookingList(req, res, next) {
     try {
-      const data = await BookCab.find({});
+      const data = await BookCab.find({})
+        .populate({ path: "user", select: "-password" })
+        .populate("car");
       return res.status(200).json({ statusCode: 200, data });
     } catch (error) {
       next(error);

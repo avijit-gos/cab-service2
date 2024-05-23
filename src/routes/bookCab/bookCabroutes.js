@@ -29,8 +29,6 @@ const VerifyAdmin = require("../../middleware/verifyAdmin");
  */
 router.post("/create", Authentication, createBookingCab);
 
-router.get("/car-list-for-admin", VerifyAdmin, getAllBookingList);
-
 /**
  * PUT route to update details of a specific booking.
  * Requires authentication middleware to ensure the user is logged in.
@@ -58,6 +56,8 @@ router.put("/cancel/:id", Authentication, cancelBooking);
  * @param {Function} handler - Function to handle the retrieval of the user's booking list
  */
 router.get("/user-booking-list", Authentication, getUserBookingList);
+
+router.get("/car-list-for-admin", VerifyAdmin, getAllBookingList);
 
 /**
  * GET route to retrieve a list of all bookings.
