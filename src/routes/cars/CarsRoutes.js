@@ -83,6 +83,7 @@ const {
  * @param {Function} handler - Function to handle the deletion of the car details
  */
   router.delete("/delete/:id",VerifyAdmin, deleteCarDetails);
-  router.get("/",VerifyAdmin, getListOfCars)
+router.get("/", VerifyAdmin, getListOfCars);
+  
   module.exports = router;
   

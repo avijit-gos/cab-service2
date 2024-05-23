@@ -435,5 +435,14 @@ class BookCabController {
       next(error);
     }
   }
+
+  async getAllBookingList(req, res, next) {
+    try {
+      const data = await BookCab.find({});
+      return res.status(200).json({ statusCode: 200, data });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 module.exports = new BookCabController();
