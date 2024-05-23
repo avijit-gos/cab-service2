@@ -11,11 +11,12 @@ const {
   claimToken,
   acceptingBooking,
   cancelRideFromAdmin,
+  getAllBookingList,
 } = require("../../controller/bookcab/bookCabController");
 const Authentication = require("../../middleware/authentication");
-const VerifyAdmin = require("../../middleware/verifyAdmin")
+const VerifyAdmin = require("../../middleware/verifyAdmin");
 
-
+router.get("/admin-list", getAllBookingList);
 /**
  * POST route to create a new booking for a cab ride.
  * Requires authentication middleware to ensure the user is logged in.
@@ -121,6 +122,5 @@ router.put("/accept-booking/:id", VerifyAdmin, acceptingBooking);
  * @param {Function} handler - Function to handle the cancellation of the ride
  */
 router.put("/cancel-ride-admin/:id", VerifyAdmin, cancelRideFromAdmin);
-
 
 module.exports = router;
