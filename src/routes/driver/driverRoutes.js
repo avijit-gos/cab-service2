@@ -1,6 +1,15 @@
-const { createNewDriver, getDrivers,searchDriver, updateDriverDetails, deleteDriverData } = require("../../controller/driver/driverController");
+/** @format */
+
+const {
+  createNewDriver,
+  getDrivers,
+  searchDriver,
+  updateDriverDetails,
+  deleteDriverData,
+  getDriverById,
+} = require("../../controller/driver/driverController");
 const verifyAdmin = require("../../middleware/verifyAdmin");
-const VerifyAdmin = require("../../middleware/verifyAdmin")
+const VerifyAdmin = require("../../middleware/verifyAdmin");
 const router = require("express").Router();
 
 /**
@@ -27,7 +36,9 @@ router.post("/create", VerifyAdmin, createNewDriver);
  * @param {Function} middleware - Middleware to verify admin privileges
  * @param {Function} handler - Function to handle the retrieval of the drivers list
  */
-router.get("/list",verifyAdmin, getDrivers);
+router.get("/list", verifyAdmin, getDrivers);
+
+router.get("/:id", VerifyAdmin, getDriverById);
 
 /**
  * GET route to search for drivers based on query parameters.
@@ -40,7 +51,7 @@ router.get("/list",verifyAdmin, getDrivers);
  * @param {Function} middleware - Middleware to verify admin privileges
  * @param {Function} handler - Function to handle the driver search operation
  */
-router.get("/search-driver",VerifyAdmin, searchDriver);
+router.get("/search-driver", VerifyAdmin, searchDriver);
 
 /**
  * PUT route to update details of a specific driver by its ID.
@@ -53,7 +64,7 @@ router.get("/search-driver",VerifyAdmin, searchDriver);
  * @param {Function} middleware - Middleware to verify admin privileges
  * @param {Function} handler - Function to handle the update of the driver details
  */
-router.put("/update/:id",VerifyAdmin, updateDriverDetails);
+router.put("/update/:id", VerifyAdmin, updateDriverDetails);
 
 /**
  * DELETE route to delete details of a specific driver by its ID.
@@ -66,5 +77,6 @@ router.put("/update/:id",VerifyAdmin, updateDriverDetails);
  * @param {Function} middleware - Middleware to verify admin privileges
  * @param {Function} handler - Function to handle the deletion of the driver details
  */
-router.delete("/delete/:id",VerifyAdmin, deleteDriverData);
+router.delete("/delete/:id", VerifyAdmin, deleteDriverData);
+
 module.exports = router;

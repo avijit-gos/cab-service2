@@ -29,7 +29,7 @@ const VerifyAdmin = require("../../middleware/verifyAdmin");
  */
 router.post("/create", Authentication, createBookingCab);
 
-router.get("/admin-list", getAllBookingList);
+router.get("/car-list-for-admin", VerifyAdmin, getAllBookingList);
 
 /**
  * PUT route to update details of a specific booking.
