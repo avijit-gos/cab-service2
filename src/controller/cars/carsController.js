@@ -24,7 +24,7 @@ class CarsController {
       }
       // Upload image and get image URL
       const imageURL = await uploadImage(req.files.image);
-      console.log(imageURL)
+      console.log(imageURL);
       // Create a new car object using the Cars model
       const newCar = Cars({
         _id: new mongoose.Types.ObjectId(), // Generate a new ObjectId for the car
@@ -38,9 +38,11 @@ class CarsController {
       // Save the new car entry to the database
       const carData = await newCar.save();
       // Return success response
-      return res
-        .status(201)
-        .json({ message: "Car has been listed", statusCode: 200, data: carData });
+      return res.status(201).json({
+        message: "Car has been listed",
+        statusCode: 200,
+        data: carData,
+      });
     } catch (error) {
       next(error);
     }
@@ -79,7 +81,7 @@ class CarsController {
         .skip(limit * (page - 1))
         .sort({ createAt: -1 });
       // Send the array of cars as the response
-      return res.status(200).json({statusCode: 200, data: cars});
+      return res.status(200).json({ statusCode: 200, data: cars });
     } catch (error) {
       next(error);
     }
@@ -94,7 +96,7 @@ class CarsController {
    */
   async searchCars(req, res, next) {
     try {
-      console.log(req.query)
+      console.log(req.query);
       // Extract page number and limit from query parameters or use default values
       const page = req.query.page || 1;
       const limit = req.query.limit || 10;
@@ -111,7 +113,7 @@ class CarsController {
         .skip(limit * (page - 1))
         .limit(limit);
       // Send the array of cars as the response
-      return res.status(200).json({statusCode: 200, data: cars});
+      return res.status(200).json({ statusCode: 200, data: cars });
     } catch (error) {
       next(error);
     }
@@ -135,7 +137,7 @@ class CarsController {
       }
       // Find the car by its ID
       const car = await Cars.findById(req.params.id);
-      return res.status(200).json({statusCode: 200, data: car});
+      return res.status(200).json({ statusCode: 200, data: car });
     } catch (error) {
       next(error);
     }
@@ -199,6 +201,30 @@ class CarsController {
         statusCode: 200,
         data: deletedCarDetails,
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getListOfCars(req, res, next) {
+    try {
+      const bookingType = req.query.isBooking || "all";
+      console.log(req.query.isBooking);
+      console.log(typeof req.query.isBooking);
+      if (bookingType === "all") {
+        const cars = await Cars.find({}).sort({ createdAt: -1 });
+        return res.status(200).json({ statusCode: 200, data: cars });
+      } else if (bookingType === "true") {
+        const cars = await Cars.find({ isBooked: true }).sort({
+          createdAt: -1,
+        });
+        return res.status(200).json({ statusCode: 200, data: cars });
+      } else {
+        const cars = await Cars.find({ isBooked: false }).sort({
+          createdAt: -1,
+        });
+        return res.status(200).json({ statusCode: 200, data: cars });
+      }
     } catch (error) {
       next(error);
     }

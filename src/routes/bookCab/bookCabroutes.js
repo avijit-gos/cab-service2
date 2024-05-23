@@ -9,7 +9,8 @@ const {
   getBookingList,
   cancelBooking,
   claimToken,
-  acceptingBooking, cancelRideFromAdmin
+  acceptingBooking,
+  cancelRideFromAdmin,
 } = require("../../controller/bookcab/bookCabController");
 const Authentication = require("../../middleware/authentication");
 const VerifyAdmin = require("../../middleware/verifyAdmin")
@@ -119,5 +120,7 @@ router.put("/accept-booking/:id", VerifyAdmin, acceptingBooking);
  * @param {Function} middleware - Middleware to verify admin privileges
  * @param {Function} handler - Function to handle the cancellation of the ride
  */
-router.put("/cancel-ride-admin/:id", VerifyAdmin, cancelRideFromAdmin)
+router.put("/cancel-ride-admin/:id", VerifyAdmin, cancelRideFromAdmin);
+
+
 module.exports = router;

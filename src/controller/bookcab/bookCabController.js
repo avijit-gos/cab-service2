@@ -4,11 +4,14 @@ const mongoose = require("mongoose");
 const User = require("../../model/user/userSchema");
 const BookCab = require("../../model/bookCab/bookCabSchema");
 const Car = require("../../model/cars/carsSchema");
-const Driver = require("../../model/drivers/driverSchema")
+const Driver = require("../../model/drivers/driverSchema");
 const createError = require("http-errors");
 const { calculateTimeDiff } = require("../../helper/helper");
 const UserWallet = require("../../model/userWallet/userWallet");
-const {confirmationMail, sendCancelationMail} = require("../../services/emailService")
+const {
+  confirmationMail,
+  sendCancelationMail,
+} = require("../../services/emailService");
 
 class BookCabController {
   /**
@@ -37,7 +40,7 @@ class BookCabController {
       const costPerKM = 100;
       const costPerExtraPessenger = 150;
       const cabFare =
-      distance * costPerKM + costPerExtraPessenger * req.body.extraPassengers;
+        distance * costPerKM + costPerExtraPessenger * req.body.extraPassengers;
 
       // calculate wallet point
       // const walletPoints = distance * 1;
@@ -60,9 +63,9 @@ class BookCabController {
         car: req.body.car,
       });
       const isBooked = await Car.findById(req.body.car).select("isBooked");
-      console.log(isBooked)
-      if(isBooked.isBooked) {
-        return res.status(200).json({message: "this car alredy booked"})
+      console.log(isBooked);
+      if (isBooked.isBooked) {
+        return res.status(200).json({ message: "this car alredy booked" });
       }
       // Save the new booking data
       const bookingData = await newBookingData.save();
@@ -72,11 +75,17 @@ class BookCabController {
         select: "name email phone profile_img",
       });
 
-      await Car.findByIdAndUpdate(req.body.car, {$set: {isBooked: true}}, {new: true});
+      await Car.findByIdAndUpdate(
+        req.body.car,
+        { $set: { isBooked: true } },
+        { new: true }
+      );
       // Respond with success message and booking data
-      return res
-        .status(201)
-        .json({ message: "Your cab booking is successfull", statusCode: 201, bookingData });
+      return res.status(201).json({
+        message: "Your cab booking is successfull",
+        statusCode: 201,
+        bookingData,
+      });
     } catch (error) {
       next(error);
     }
@@ -124,7 +133,7 @@ class BookCabController {
           })
           .sort({ createdAt: -1 }); // Sort bookings based on creation date in descending order
         // Respond with the list of bookings
-        return res.status(200).json({statusCode: 200, data: list});
+        return res.status(200).json({ statusCode: 200, data: list });
       } else {
         // Retrieve list of bookings for the logged-in user with pagination
         const list = await BookCab.find({
@@ -138,7 +147,7 @@ class BookCabController {
           })
           .sort({ createdAt: -1 }); // Sort bookings based on creation date in descending order
         // Respond with the list of bookings
-        return res.status(200).json({statusCode: 200, data: list});
+        return res.status(200).json({ statusCode: 200, data: list });
       }
     } catch (error) {
       next(error);
@@ -162,15 +171,17 @@ class BookCabController {
         throw createError.BadRequest({ message: "Invalid request parameter" });
       }
       // Retrieve details of the single booking based on the provided ID
-      const bookingData = await BookCab.findById(req.params.id).populate({
-        path: "user",
-        select: "profile_img name phone email",
-      }).populate({
-        path: "driver",
-        select: "profile_image name phone email drivingLicense"
-      })
+      const bookingData = await BookCab.findById(req.params.id)
+        .populate({
+          path: "user",
+          select: "profile_img name phone email",
+        })
+        .populate({
+          path: "driver",
+          select: "profile_image name phone email drivingLicense",
+        });
       // Respond with the booking details
-      return res.status(200).json({statusCode: 200, data: bookingData});
+      return res.status(200).json({ statusCode: 200, data: bookingData });
     } catch (error) {
       next(error);
     }
@@ -197,11 +208,17 @@ class BookCabController {
       // Retrieve details of the booking based on the provided ID
       const bookingData = await BookCab.findById(req.params.id);
       const result = await calculateTimeDiff(bookingData);
-      if(!result) {
-        throw createError.BadRequest({message: "you cannot change booking details"})
+      if (!result) {
+        throw createError.BadRequest({
+          message: "you cannot change booking details",
+        });
       }
-      const updatedData = await BookCab.findByIdAndUpdate(req.params.id, req.body, {new: true});
-      return res.status(200).json({statusCode: 200, data: updatedData});
+      const updatedData = await BookCab.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true }
+      );
+      return res.status(200).json({ statusCode: 200, data: updatedData });
     } catch (error) {
       next(error);
     }
@@ -236,7 +253,7 @@ class BookCabController {
           })
           .sort({ createdAt: -1 }); // Sort bookings based on creation date in descending order
         // Respond with the list of bookings
-        return res.status(200).json({statusCode: 200, data: list});
+        return res.status(200).json({ statusCode: 200, data: list });
       } else if (sortStatus === "active") {
         // Retrieve list of bookings with pagination
         const list = await BookCab.find({ status: "active" })
@@ -248,7 +265,7 @@ class BookCabController {
           })
           .sort({ createdAt: -1 }); // Sort bookings based on creation date in descending order
         // Respond with the list of bookings
-        return res.status(200).json({statusCode: 200, data: list});
+        return res.status(200).json({ statusCode: 200, data: list });
       } else {
         // Retrieve list of bookings with pagination
         const list = await BookCab.find({ status: "inactive" })
@@ -260,7 +277,7 @@ class BookCabController {
           })
           .sort({ createdAt: -1 }); // Sort bookings based on creation date in descending order
         // Respond with the list of bookings
-        return res.status(200).json({statusCode: 200, data: list});
+        return res.status(200).json({ statusCode: 200, data: list });
       }
     } catch (error) {
       next(error);
@@ -277,18 +294,36 @@ class BookCabController {
       const bookingData = await BookCab.findById(req.params.id);
       // Calculate time difference to check if the booking update is allowed
       const timeDifference = await calculateTimeDiff(bookingData);
-      console.log(timeDifference)
+      console.log(timeDifference);
       // if timeDifference is lesser than the 24 hour then user can't update booking status
       // Otherwise user can update the booking status
-      if(!timeDifference) {
-        return res.status(200).json({message: "Connect to admin to cancel your booking", statusCode: 200})
+      if (!timeDifference) {
+        return res.status(200).json({
+          message: "Connect to admin to cancel your booking",
+          statusCode: 200,
+        });
       }
-      // update booking status to inactive 
-      await BookCab.findByIdAndUpdate(req.params.id, {$set: {status: 'inactive'}}, {new: true})
+      // update booking status to inactive
+      await BookCab.findByIdAndUpdate(
+        req.params.id,
+        { $set: { status: "inactive" } },
+        { new: true }
+      );
       // also update the car's status to false i.e car is available for new booking
-      await Car.findByIdAndUpdate(bookingData.car, {$set: {isBooked: false}}, {new: true});
-      await Driver.findByIdAndUpdate(bookingData.driver, {$set: {status: false}}, {new: true});
-      return res.status(200).json({message: "Your booking successfully canceled", statusCode: 200})
+      await Car.findByIdAndUpdate(
+        bookingData.car,
+        { $set: { isBooked: false } },
+        { new: true }
+      );
+      await Driver.findByIdAndUpdate(
+        bookingData.driver,
+        { $set: { status: false } },
+        { new: true }
+      );
+      return res.status(200).json({
+        message: "Your booking successfully canceled",
+        statusCode: 200,
+      });
     } catch (error) {
       next(error);
     }
@@ -296,28 +331,39 @@ class BookCabController {
 
   async claimToken(req, res, next) {
     try {
-      if(!req.params.id) {
-        throw createError.BadRequest({message: "Invalid request"})
+      if (!req.params.id) {
+        throw createError.BadRequest({ message: "Invalid request" });
       }
       const bookingDetails = await BookCab.findById(req.params.id);
-      const walletPoint = bookingDetails.distance * Number(process.env.WALLET_POINT);
+      const walletPoint =
+        bookingDetails.distance * Number(process.env.WALLET_POINT);
       // updating the car booking status from true to false
       // if the booking status is false that means other users can booked that car
       // if the booking status is true then users cannot booked the same car util present booking is completed or canceled..
-      const updateCarStatus = await Car.findByIdAndUpdate(bookingDetails.car, {$set: {isBooked: false}}, {new: true});
+      const updateCarStatus = await Car.findByIdAndUpdate(
+        bookingDetails.car,
+        { $set: { isBooked: false } },
+        { new: true }
+      );
 
       // if the ride is completed then update the wallet document with wallet token
       const walletData = UserWallet({
         _id: new mongoose.Types.ObjectId(),
         user: req.user._id,
         amount: walletPoint,
-        booking: req.params.id
+        booking: req.params.id,
       });
       await walletData.save();
-      await Driver.findByIdAndUpdate(bookingDetails.driver, {$set: {status: false}}, {new: true})
-      return res.status(200).json({message: "Successfully claimed token", statusCode: 200});
+      await Driver.findByIdAndUpdate(
+        bookingDetails.driver,
+        { $set: { status: false } },
+        { new: true }
+      );
+      return res
+        .status(200)
+        .json({ message: "Successfully claimed token", statusCode: 200 });
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -325,44 +371,68 @@ class BookCabController {
     try {
       const id = req.params.id;
       const driverId = req.body.driverId;
-      if(!id) {
-        throw createError.BadRequest({message: "Invalid booking id"});
-      }
-      else if(!driverId) {
-        throw createError.BadRequest({message: 'Driver id not found'})
+      if (!id) {
+        throw createError.BadRequest({ message: "Invalid booking id" });
+      } else if (!driverId) {
+        throw createError.BadRequest({ message: "Driver id not found" });
       }
       // update the driver status with true
-      await Driver.findByIdAndUpdate(driverId, {$set: {status: true}}, {new: true})
-      const bookingdata = await BookCab.findByIdAndUpdate(id, {$set: {driver: driverId}}, {new: true});
+      await Driver.findByIdAndUpdate(
+        driverId,
+        { $set: { status: true } },
+        { new: true }
+      );
+      const bookingdata = await BookCab.findByIdAndUpdate(
+        id,
+        { $set: { driver: driverId } },
+        { new: true }
+      );
       const data = await BookCab.findById(id)
-                                .populate({path: "user", select: "name email phone profile_img"})
-                                .populate({path: "driver", select: "name phone email profile_image"})
-                                .populate({path: "car", select: "name image price type description"});
+        .populate({ path: "user", select: "name email phone profile_img" })
+        .populate({ path: "driver", select: "name phone email profile_image" })
+        .populate({ path: "car", select: "name image price type description" });
       const result = await confirmationMail(data);
-      return res.status(200).json({message: "Successuly booked",statusCode: 200, bookingData: data})
+      return res.status(200).json({
+        message: "Successuly booked",
+        statusCode: 200,
+        bookingData: data,
+      });
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
   async cancelRideFromAdmin(req, res, next) {
     try {
       const id = req.params.id;
-      if(!id) {
-        throw createError.BadRequest({message: "No booking id found"})
+      if (!id) {
+        throw createError.BadRequest({ message: "No booking id found" });
       }
       const bookingData = await BookCab.findById(id);
       // booking status updated
-      const bookingUpdate = await BookCab.findByIdAndUpdate(id, {$set: {status: 'inactive'}}, {new: true});
+      const bookingUpdate = await BookCab.findByIdAndUpdate(
+        id,
+        { $set: { status: "inactive" } },
+        { new: true }
+      );
       // update in driver status
-      const updateDriverUpdate = await Driver.findByIdAndUpdate(bookingData.driver, {$set: {status: false}}, {new: true});
-      const updatedCar = await Car.findByIdAndUpdate(bookingData.car, {$set: {isBooked: false}}, {new: true});
-      const user  = await User.findById(bookingData.user);
+      const updateDriverUpdate = await Driver.findByIdAndUpdate(
+        bookingData.driver,
+        { $set: { status: false } },
+        { new: true }
+      );
+      const updatedCar = await Car.findByIdAndUpdate(
+        bookingData.car,
+        { $set: { isBooked: false } },
+        { new: true }
+      );
+      const user = await User.findById(bookingData.user);
       // await sendCancelationMail(id, user.email);
-      return res.status(200).json({message: "successfully canceled", statusCode: 200})
-    }
-    catch(error) {
-      next(error)
+      return res
+        .status(200)
+        .json({ message: "successfully canceled", statusCode: 200 });
+    } catch (error) {
+      next(error);
     }
   }
 }
