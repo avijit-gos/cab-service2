@@ -1,13 +1,14 @@
 /** @format */
 
 const {
-    createCarList,
-    getCarsList,
-    searchCars,
-    getCarById,
-    updateCarDetails,
-    deleteCarDetails,
-  } = require("../../controller/cars/carsController");
+  createCarList,
+  getCarsList,
+  searchCars,
+  getCarById,
+  updateCarDetails,
+  deleteCarDetails,
+  getListOfCars,
+} = require("../../controller/cars/carsController");
   const VerifyAdmin = require("../../middleware/verifyAdmin");
   const router = require("express").Router();
   
@@ -82,6 +83,6 @@ const {
  * @param {Function} handler - Function to handle the deletion of the car details
  */
   router.delete("/delete/:id",VerifyAdmin, deleteCarDetails);
-  
+  router.get("/",VerifyAdmin, getListOfCars)
   module.exports = router;
   
