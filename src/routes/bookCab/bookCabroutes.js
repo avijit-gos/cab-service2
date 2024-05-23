@@ -16,7 +16,6 @@ const {
 const Authentication = require("../../middleware/authentication");
 const VerifyAdmin = require("../../middleware/verifyAdmin");
 
-router.get("/admin-list", getAllBookingList);
 /**
  * POST route to create a new booking for a cab ride.
  * Requires authentication middleware to ensure the user is logged in.
@@ -29,6 +28,8 @@ router.get("/admin-list", getAllBookingList);
  * @param {Function} handler - Function to handle the creation of the booking
  */
 router.post("/create", Authentication, createBookingCab);
+
+router.get("/admin-list", getAllBookingList);
 
 /**
  * PUT route to update details of a specific booking.
