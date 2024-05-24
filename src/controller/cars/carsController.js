@@ -76,7 +76,7 @@ class CarsController {
 
       // Retrieve cars matching the query, sorted by creation date in descending order,
       // and paginated based on the specified page and limit
-      const cars = await Cars.find(query)
+      const cars = await Cars.find({ isBooked: false })
         .limit(limit)
         .skip(limit * (page - 1))
         .sort({ createAt: -1 });
