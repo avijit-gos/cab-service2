@@ -25,8 +25,9 @@ const BookCabSchema = mongoose.Schema(
     paymentMethod: { type: String }, // Payment method used
     paymentDate: { type: Date }, // Date of payment
     status: { type: String, enum: ["active", "inactive"], default: "active" },
-    distance: {type: Number, default: 0},
-    driver: {type: mongoose.Schema.Types.ObjectId, ref: "Driver"}
+    distance: { type: Number, default: 0 },
+    driver: { type: mongoose.Schema.Types.ObjectId, ref: "Driver" },
+    isAccept: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

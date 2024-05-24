@@ -384,7 +384,7 @@ class BookCabController {
       );
       const bookingdata = await BookCab.findByIdAndUpdate(
         id,
-        { $set: { driver: driverId } },
+        { $set: { driver: driverId, isAccept: true } },
         { new: true }
       );
       const data = await BookCab.findById(id)
