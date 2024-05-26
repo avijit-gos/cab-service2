@@ -28,10 +28,9 @@ class BookCabController {
     try {
       // Check if required fields are present in the request body
       if (
-        !req.body.travelDate.trim() ||
-        !req.body.pickupTime.trim() ||
-        !req.body.pickupLocation.trim() ||
-        !req.body.dropLocation.trim()
+        !req.body.travelDate ||
+        !req.body.pickupTime ||
+        !req.body.pickupLocation
       ) {
         throw createError.BadRequest({ message: "Invalid format" });
       }
@@ -85,6 +84,28 @@ class BookCabController {
         message: "Your cab booking is successfull",
         statusCode: 201,
         bookingData,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async confirmBooking(req, res, next) {
+    try {
+      const bookingId = req.params.bookingId;
+      const { status, paymentStatus } = req.body;
+      if (!bookingId) {
+        throw createError.BadRequest({ message: "Invalid booking ID" });
+      }
+      const updateBooking = await BookCab.findByIdAndUpdate(
+        bookingId,
+        { $set: { status: status, paymentStatus: paymentStatus } },
+        { new: true }
+      );
+      return res.status(200).json({
+        message: "Successfully car booked",
+        statusCode: 200,
+        data: updateBooking,
       });
     } catch (error) {
       next(error);
