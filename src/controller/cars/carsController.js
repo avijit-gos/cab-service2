@@ -209,8 +209,6 @@ class CarsController {
   async getListOfCars(req, res, next) {
     try {
       const bookingType = req.query.isBooking || "all";
-      console.log(req.query.isBooking);
-      console.log(typeof req.query.isBooking);
       if (bookingType === "all") {
         const cars = await Cars.find({}).sort({ createdAt: -1 });
         return res.status(200).json({ statusCode: 200, data: cars });
@@ -219,10 +217,12 @@ class CarsController {
           createdAt: -1,
         });
         return res.status(200).json({ statusCode: 200, data: cars });
-      } else {
+      } else if (bookingType === "false") {
+        console.log("Querying for cars where isBooked is false");
         const cars = await Cars.find({ isBooked: false }).sort({
           createdAt: -1,
         });
+        console.log(`Found cars: ${cars.length}`);
         return res.status(200).json({ statusCode: 200, data: cars });
       }
     } catch (error) {

@@ -12,6 +12,7 @@ const {
   acceptingBooking,
   cancelRideFromAdmin,
   getAllBookingList,
+  confirmBooking,
 } = require("../../controller/bookcab/bookCabController");
 const Authentication = require("../../middleware/authentication");
 const VerifyAdmin = require("../../middleware/verifyAdmin");
@@ -28,6 +29,8 @@ const VerifyAdmin = require("../../middleware/verifyAdmin");
  * @param {Function} handler - Function to handle the creation of the booking
  */
 router.post("/create", Authentication, createBookingCab);
+
+router.post("/confirm-booking/:bookingId", Authentication, confirmBooking)
 
 /**
  * PUT route to update details of a specific booking.

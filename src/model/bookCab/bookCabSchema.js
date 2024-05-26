@@ -10,7 +10,7 @@ const BookCabSchema = mongoose.Schema(
     travelDate: { type: String, required: true },
     pickupTime: { type: String, required: true },
     pickupLocation: { type: String, required: true },
-    dropLocation: { type: String, required: true },
+    dropLocation: { type: [String], default: [] },
     luggage: { type: Number, default: 0 },
     extraPassengers: { type: Number, default: 0, max: 2 },
     extraPassengerFare: { type: Number, default: 0 }, // Extra fare for additional passengers
@@ -24,7 +24,11 @@ const BookCabSchema = mongoose.Schema(
     }, // Payment status
     paymentMethod: { type: String }, // Payment method used
     paymentDate: { type: Date }, // Date of payment
-    status: { type: String, enum: ["active", "inactive"], default: "active" },
+    status: {
+      type: String,
+      enum: ["active", "inactive", "pending"],
+      default: "pending",
+    },
     distance: { type: Number, default: 0 },
     driver: { type: mongoose.Schema.Types.ObjectId, ref: "Driver" },
     isAccept: { type: Boolean, default: false },
