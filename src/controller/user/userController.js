@@ -381,18 +381,37 @@ class UserController {
         throw createError.BadRequest({ message: "Invalid email format" });
       }
       // Find user by email
-      const user = await User.findOne({ email: req.body.email });
+      const user = await User.findOne({ email: req.body.email }).select(
+        "-password"
+      );
       if (!user) {
         throw createError.BadRequest({
           message: "No user found with this email address",
         });
       } else {
-        // Generate key for changing password
-        const key = await generateKey(req.body.email);
-        // Send verification email with key
-        const sendEmail = await sendVerificationEmail(req.body.email, key);
+        // // Generate key for changing password
+        // const key = await generateKey(req.body.email);
+        // // Send verification email with key
+        // const sendEmail = await sendVerificationEmail(req.body.email, key);
+        // return res.status(200).json({
+        //   message: "Verification mail has been sent",
+        //   statusCode: 200,
+        // });
+        /**
+         * NEW CODE
+         */
+        // Generate OTP for user
+        const generateOTP = Math.floor(100000 + Math.random() * 900000);
+        const token = await generateAccessToken(user);
+        await User.findByIdAndUpdate(
+          user._id,
+          { $set: { forgetPass_otp: generateOTP } },
+          { new: true }
+        );
         return res.status(200).json({
-          message: "Verification mail has been sent",
+          message: "OTP has been send",
+          accessToken: token,
+          OTP: generateOTP,
           statusCode: 200,
         });
       }
@@ -420,12 +439,16 @@ class UserController {
           message: "Password & Confirm password did not match",
         });
       }
+      const user = await User.findById(req.user._id).select("forgetPass_otp");
+      if (Number(user.forgetPass_otp) !== Number(req.body.OTP)) {
+        throw createError.BadRequest({ message: "OTP is not correct" });
+      }
       // Hash the new password
       const hash = await hashPassword(req.body.password);
       // Update user's password in the database
-      const updateUserData = await User.findOneAndUpdate(
-        { email: req.user.email },
-        { $set: { password: hash } },
+      const updateUserData = await User.findByIdAndUpdate(
+        req.user._id,
+        { $set: { password: hash, forgetPass_otp: 0 } },
         { new: true }
       );
       return res

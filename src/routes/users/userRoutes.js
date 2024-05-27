@@ -120,7 +120,7 @@ router.patch("/verify-email", authentication, verifyEmail);
  * @param {string} path - Express path
  * @param {callback} middleware - Controller function to handle forget password request
  */
-router.post("/forget-password", forgetPassword);
+router.put("/forget-password", forgetPassword);
 
 /**
  * Express route for updating password after forget password process.
