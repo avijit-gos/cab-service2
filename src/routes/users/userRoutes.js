@@ -16,8 +16,10 @@ const {
   getUserById,
   searchUser,
   deleteUserById,
-  updateProfileStatus,deleteProfile,
-  deleteProfileStatus
+  updateProfileStatus,
+  deleteProfile,
+  deleteProfileStatus,
+  updateUserProfile,
 } = require("../../controller/user/userController");
 const authentication = require("../../middleware/authentication");
 const verifyUserEmail = require("../../middleware/verifyUserEmail");
@@ -48,7 +50,7 @@ router.post("/login", loginUser);
  * @param {callback} middleware - Authentication middleware to verify user's access token
  * @param {callback} middleware - Controller function to handle updating profile image
  */
-router.patch("/update-profile-image",authentication, updateProfileImage);
+router.patch("/update-profile-image", authentication, updateProfileImage);
 
 /**
  * Express route for updating user profile name.
@@ -131,7 +133,7 @@ router.post("/forget-password", forgetPassword);
  */
 router.patch("/forget-update-password", verifyUserEmail, forgetUpdatePassword);
 
-router.delete("/delete-profile/:id",authentication, deleteProfile)
+router.delete("/delete-profile/:id", authentication, deleteProfile);
 
 // ******* ADMIN APIs ******* //
 /**
@@ -191,6 +193,6 @@ router.get("/:id", verifyAdmin, getUserById);
  */
 router.put("/delete-profile-status/:id", verifyAdmin, deleteProfileStatus);
 
-
+router.put("/update-profile", authentication, updateUserProfile);
 
 module.exports = router;

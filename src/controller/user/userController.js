@@ -2,7 +2,7 @@
 
 const mongoose = require("mongoose");
 const User = require("../../model/user/userSchema");
-const UserWallet = require("../../model/userWallet/userWallet")
+const UserWallet = require("../../model/userWallet/userWallet");
 const createError = require("http-errors");
 const {
   hashPassword,
@@ -376,7 +376,7 @@ class UserController {
    */
   async forgetPassword(req, res, next) {
     try {
-      console.log("*****************")
+      console.log("*****************");
       if (!req.body.email.trim()) {
         throw createError.BadRequest({ message: "Invalid email format" });
       }
@@ -391,9 +391,10 @@ class UserController {
         const key = await generateKey(req.body.email);
         // Send verification email with key
         const sendEmail = await sendVerificationEmail(req.body.email, key);
-        return res
-          .status(200)
-          .json({ message: "Verification mail has been sent", statusCode: 200 });
+        return res.status(200).json({
+          message: "Verification mail has been sent",
+          statusCode: 200,
+        });
       }
     } catch (error) {
       next(error);
@@ -449,7 +450,7 @@ class UserController {
       const users = await User.find({})
         .select("-password")
         .limit(limit)
-        .skip((page-1)*limit) // Exclude password field
+        .skip((page - 1) * limit) // Exclude password field
         .sort({ createdAt: -1 }); // Sort by 'createdAt' property in descending order
       return res.status(200).json(users);
     } catch (error) {
@@ -472,7 +473,7 @@ class UserController {
       } else {
         // Find user by ID and exclude password field
         const user = await User.findById(req.params.id).select("-password");
-        return res.status(200).json({satatusCode: 200, data: user});
+        return res.status(200).json({ satatusCode: 200, data: user });
       }
     } catch (error) {
       next(error);
@@ -505,7 +506,7 @@ class UserController {
         .skip(limit * (page - 1))
         .limit(limit);
       // Send the array of users as the response
-      return res.status(200).json({statusCode: 200, data: users});
+      return res.status(200).json({ statusCode: 200, data: users });
     } catch (error) {
       next(error);
     }
@@ -526,13 +527,17 @@ class UserController {
         throw createError.BadRequest({ message: "Invalid request parameter" });
       }
       // Find the user by their ID and delete them from the database
-      const user = await User.findByIdAndUpdate(req.params.id, {$set: {status: req.body.status}}, {new: true}).select(
-        "-password"
-      );
+      const user = await User.findByIdAndUpdate(
+        req.params.id,
+        { $set: { status: req.body.status } },
+        { new: true }
+      ).select("-password");
       // Return a success message along with the deleted user's information
-      return res
-        .status(200)
-        .json({ message: `User with ${req.params.id} has been deleted`, statusCode: 200, user });
+      return res.status(200).json({
+        message: `User with ${req.params.id} has been deleted`,
+        statusCode: 200,
+        user,
+      });
     } catch (error) {
       next(error);
     }
@@ -581,30 +586,59 @@ class UserController {
 
   async deleteProfile(req, res, next) {
     try {
-      const {id} = req.params;
-      if(!id) {
-        throw createError.BadRequest({message: "Invalid user id provided"})
+      const { id } = req.params;
+      if (!id) {
+        throw createError.BadRequest({ message: "Invalid user id provided" });
       }
       const deletedUserData = await User.findByIdAndDelete(id);
-      await UserWallet.deleteMany({user: id});
-      return res.status(200).json({message: "User successfully deleted account.", statusCode: 200})
-    }
-    catch(erorr) {
-      next(error)
+      await UserWallet.deleteMany({ user: id });
+      return res.status(200).json({
+        message: "User successfully deleted account.",
+        statusCode: 200,
+      });
+    } catch (erorr) {
+      next(error);
     }
   }
 
   async deleteProfileStatus(req, res, next) {
     try {
-      if(!req.params.id) {
-        throw createError.BadRequest({message: "Invalid ID"})
-      } 
+      if (!req.params.id) {
+        throw createError.BadRequest({ message: "Invalid ID" });
+      }
       const body = req.body.isDelete;
-      const user = await User.findByIdAndUpdate(req.params.id, {$set: {isDelete: body}}, {new: true});
-      return res.status(200).json({message: "User successfully deleted profile.", statusCode: 200, data: user})
+      const user = await User.findByIdAndUpdate(
+        req.params.id,
+        { $set: { isDelete: body } },
+        { new: true }
+      );
+      return res.status(200).json({
+        message: "User successfully deleted profile.",
+        statusCode: 200,
+        data: user,
+      });
+    } catch (error) {
+      next(error);
     }
-    catch(error) {
-      next(error)
+  }
+
+  async updateUserProfile(req, res, next) {
+    try {
+      if (!req.user._id) {
+        throw createError.BadRequest({ message: "Invalid user ID" });
+      }
+      const updatedUserData = await User.findByIdAndUpdate(
+        req.user._id,
+        req.body,
+        { new: true }
+      );
+      return res.status(200).json({
+        message: "User profile has been successfully updated",
+        statusCode: 200,
+        data: updatedUserData,
+      });
+    } catch (error) {
+      next(error);
     }
   }
 }
