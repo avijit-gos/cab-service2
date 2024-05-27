@@ -16,8 +16,10 @@ const {
   getUserById,
   searchUser,
   deleteUserById,
-  updateProfileStatus,deleteProfile,
-  deleteProfileStatus
+  updateProfileStatus,
+  deleteProfile,
+  deleteProfileStatus,
+  updateUserProfile,
 } = require("../../controller/user/userController");
 const authentication = require("../../middleware/authentication");
 const verifyUserEmail = require("../../middleware/verifyUserEmail");
@@ -191,6 +193,6 @@ router.get("/:id", verifyAdmin, getUserById);
  */
 router.put("/delete-profile-status/:id", verifyAdmin, deleteProfileStatus);
 
-
+router.put("/update-profile", authentication, updateUserProfile);
 
 module.exports = router;
