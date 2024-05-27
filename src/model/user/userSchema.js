@@ -39,7 +39,8 @@ const UserSchema = mongoose.Schema(
     points: { type: Number, default: 0 },
     walletPoints: { type: Number, default: 0 }, // User's wallet points
     status: { type: String, enum: ["active", "inactive"], default: "active" },
-    isDelete: { type: Boolean, default: false}
+    isDelete: { type: Boolean, default: false },
+    forgetPass_otp: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
