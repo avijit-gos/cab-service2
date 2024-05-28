@@ -73,6 +73,7 @@ class BookCabController {
         path: "user",
         select: "name email phone profile_img",
       });
+      await bookingData.populate('car')
 
       await Car.findByIdAndUpdate(
         req.body.car,
@@ -137,7 +138,7 @@ class BookCabController {
           .populate({
             path: "user",
             select: "name email phone profile_img",
-          })
+          }).populate("car")
           .sort({ createdAt: -1 }); // Sort bookings based on creation date in descending order
         // Respond with the list of bookings
         return res.status(200).json(list);
@@ -151,7 +152,7 @@ class BookCabController {
           .populate({
             path: "user",
             select: "name email phone profile_img",
-          })
+          }).populate("car")
           .sort({ createdAt: -1 }); // Sort bookings based on creation date in descending order
         // Respond with the list of bookings
         return res.status(200).json({ statusCode: 200, data: list });
@@ -165,7 +166,7 @@ class BookCabController {
           .populate({
             path: "user",
             select: "name email phone profile_img",
-          })
+          }).populate("car")
           .sort({ createdAt: -1 }); // Sort bookings based on creation date in descending order
         // Respond with the list of bookings
         return res.status(200).json({ statusCode: 200, data: list });
