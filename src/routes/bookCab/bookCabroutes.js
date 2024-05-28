@@ -60,7 +60,7 @@ router.put("/cancel/:id", Authentication, cancelBooking);
  */
 router.get("/user-booking-list", Authentication, getUserBookingList);
 
-router.get("/car-list-for-admin", VerifyAdmin, getAllBookingList);
+router.get("/car-list-for-admin", getAllBookingList);
 
 /**
  * GET route to retrieve a list of all bookings.
