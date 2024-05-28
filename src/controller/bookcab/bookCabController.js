@@ -197,7 +197,7 @@ class BookCabController {
         .populate({
           path: "user",
           select: "profile_img name phone email",
-        })
+        }).populate("car")
         .populate({
           path: "driver",
           select: "profile_image name phone email drivingLicense",
