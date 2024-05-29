@@ -126,21 +126,9 @@ class Helper {
 
   async calculateTimeDiff(data) {
     try {
+      console.log(data)
       const travelDate = data.travelDate;
       const pickupTime = data.pickupTime;
-      // console.log("****",pickupTimeStr, travelDateStr)
-
-      // Parse the date and time strings
-      // const [day, month, year] = travelDateStr.split("-");
-      // const [hours, minutes] = pickupTimeStr.split(":");
-      // const date = new Date(`${year}-${month}-${day}T${hours}:${minutes}:00`);
-      // const timestamp = date.getTime();
-      // const currentTimeStamp = Date.now();
-      // const difference = timestamp - currentTimeStamp;
-      // const hoursDifference = difference / (1000 * 60 * 60);
-
-      // return hoursDifference;
-      // Step 1: Get the current timestamp
       const now = new Date();
 
       // Step 2: Define the travel date and pickup time

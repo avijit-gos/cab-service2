@@ -211,7 +211,8 @@ class BookCabController {
         .populate({
           path: "user",
           select: "profile_img name phone email",
-        }).populate("car")
+        })
+        .populate("car")
         .populate({
           path: "driver",
           select: "profile_image name phone email drivingLicense",
@@ -326,11 +327,11 @@ class BookCabController {
       if (!req.params.id) {
         throw createError.BadRequest({ message: "Invalid request parameter" });
       }
+      
       // Retrieve details of the booking based on the provided ID
       const bookingData = await BookCab.findById(req.params.id);
       // Calculate time difference to check if the booking update is allowed
       const timeDifference = await calculateTimeDiff(bookingData);
-      console.log("timeDifference::",timeDifference)
 
       // if timeDifference is lesser than the 24 hour then user can't update booking status
       // Otherwise user can update the booking status
@@ -344,7 +345,7 @@ class BookCabController {
          * Notification System
          */
         const notificationObj = AdminNotification({
-          _id: mongoose.Types.ObjectId(),
+          _id: new mongoose.Types.ObjectId(),
           type: 2,
           from :req.user._id,
           booking:req.params.id
@@ -437,7 +438,7 @@ class BookCabController {
       );
       const bookingdata = await BookCab.findByIdAndUpdate(
         id,
-        { $set: { driver: driverId, isAccept: true } },
+        { $set: { driver: driverId, isAccept: true, status: 'active' } },
         { new: true }
       );
       const data = await BookCab.findById(id)
