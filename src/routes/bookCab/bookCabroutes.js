@@ -13,9 +13,11 @@ const {
   cancelRideFromAdmin,
   getAllBookingList,
   confirmBooking,
+  cancelBookingList
 } = require("../../controller/bookcab/bookCabController");
 const Authentication = require("../../middleware/authentication");
 const VerifyAdmin = require("../../middleware/verifyAdmin");
+const AdminNotification = require("../../model/notification/adminNotification")
 
 /**
  * POST route to create a new booking for a cab ride.
@@ -74,7 +76,7 @@ router.get("/car-list-for-admin", getAllBookingList);
  * @param {Function} handler - Function to handle the retrieval of the booking list
  */
 router.get("/list", Authentication, getBookingList);
-
+router.get("/cancel-list", VerifyAdmin, cancelBookingList)
 /**
  * GET route to retrieve details of a specific booking by its ID.
  * Requires authentication middleware to ensure the user is logged in.
@@ -126,5 +128,7 @@ router.put("/accept-booking/:id", VerifyAdmin, acceptingBooking);
  * @param {Function} handler - Function to handle the cancellation of the ride
  */
 router.put("/cancel-ride-admin/:id", VerifyAdmin, cancelRideFromAdmin);
+
+
 
 module.exports = router;

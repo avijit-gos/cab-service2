@@ -12,8 +12,7 @@ const {
   confirmationMail,
   sendCancelationMail,
 } = require("../../services/emailService");
-const AdminNotification = require("../../model/notification/adminNotification");
-const Notificaton = require("../../model/notification/userNotification")
+const AdminNotification = require("../../model/notification/adminNotification")
 
 class BookCabController {
   /**
@@ -36,12 +35,14 @@ class BookCabController {
       ) {
         throw createError.BadRequest({ message: "Invalid format" });
       }
+      const carData = await Car.findById(req.body.car);
+
       // calculate cab fare
       const distance = 2;
       const costPerKM = 100;
       const costPerExtraPessenger = 150;
       const cabFare =
-        distance * costPerKM + costPerExtraPessenger * req.body.extraPassengers;
+        distance * costPerKM + costPerExtraPessenger * req.body.extraPassengers + carData.price;
 
       // calculate wallet point
       // const walletPoints = distance * 1;
@@ -64,7 +65,6 @@ class BookCabController {
         car: req.body.car,
       });
       const isBooked = await Car.findById(req.body.car).select("isBooked");
-      console.log(isBooked);
       if (isBooked.isBooked) {
         return res.status(200).json({ message: "this car alredy booked" });
       }
@@ -83,19 +83,22 @@ class BookCabController {
         { new: true }
       );
       // Send notification to admin after successfully booked the cab
+
       const notificationObj = AdminNotification({
         _id: new mongoose.Types.ObjectId(),
         type: 1,
         from: req.user._id,
         booking:bookingData._id
       })
+
       const notificationData = await notificationObj.save();
       // Respond with success message and booking data
       return res.status(201).json({
         message: "Your cab booking is successfull",
         statusCode: 201,
         bookingData,
-        notification: notificationData
+        notificationData
+        
       });
     } catch (error) {
       next(error);
@@ -327,25 +330,30 @@ class BookCabController {
       const bookingData = await BookCab.findById(req.params.id);
       // Calculate time difference to check if the booking update is allowed
       const timeDifference = await calculateTimeDiff(bookingData);
+      console.log("timeDifference::",timeDifference)
 
       // if timeDifference is lesser than the 24 hour then user can't update booking status
       // Otherwise user can update the booking status
       if (!timeDifference) {
-      /**
-       * Send Notification to Admin after user want to cancel his/her booking
-      */
-      const notificationObj = AdminNotification({
-        _id: new mongoose.Schema.Types.ObjectId(),
-        to: bookingData.user,
-        type: 2,
-        from: req.user._id,
-        booking: req.params.id
-      })
-      const notification = await notificationObj.save()
+        await BookCab.findByIdAndUpdate(
+          req.params.id,
+          { $set: { status: "request" } },
+          { new: true }
+        );
+        /**
+         * Notification System
+         */
+        const notificationObj = AdminNotification({
+          _id: mongoose.Types.ObjectId(),
+          type: 2,
+          from :req.user._id,
+          booking:req.params.id
+        });
+        const notificationData = await notificationObj.save();
         return res.status(200).json({
           message: "Connect to admin to cancel your booking",
           statusCode: 200,
-          notification: notification
+          notification: notificationData
         });
       }
       // update booking status to inactive
@@ -441,18 +449,11 @@ class BookCabController {
       /**
        * Send notification from ADMIN after successfully accept the booking request
        */
-      const notification = Notificaton({
-        _id: new mongoose.Types.ObjectId(),
-        type: 1, // type 2: Admin accept booking request,
-        to: data.user._id,
-        booking: data._id
-      });
-      const notificationData = await notification.save();
       return res.status(200).json({
         message: "Successuly booked",
         statusCode: 200,
         bookingData: data,
-        notificationData
+        
       });
     } catch (error) {
       next(error);
@@ -487,15 +488,9 @@ class BookCabController {
       /**
        * Send Notification to user after ADMIN successfully cqancel user ride
        */
-      const notificationObj = Notificaton({
-        _id: new mongoose.Schema.Types.ObjectId(),
-        to: bookingData.user,
-        type: 2
-      })
-      const notification = await notificationObj.save()
       return res
         .status(200)
-        .json({ message: "successfully canceled", statusCode: 200, notification: notification });
+        .json({ message: "successfully canceled", statusCode: 200 });
     } catch (error) {
       next(error);
     }
@@ -509,6 +504,17 @@ class BookCabController {
       return res.status(200).json({ statusCode: 200, data });
     } catch (error) {
       next(error);
+    }
+  }
+
+  async cancelBookingList(req, res, next) {
+    try {
+      const page = req.query.page || 1;
+      const limit = req.query.limit || 10;
+      const result = await BookCab.find({status: 'request'}).limit(limit).skip(limit * (page-1));
+      return res.status(200).json({statusCode: 200, data: result})
+    } catch (error) {
+      next(error)
     }
   }
 }
