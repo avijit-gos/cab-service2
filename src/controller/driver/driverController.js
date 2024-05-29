@@ -39,7 +39,7 @@ class DriverController {
     try {
       const page = req.query.page || 1;
       const limit = req.query.limit || 10;
-      const drivers = await Driver.find({ status: false })
+      const drivers = await Driver.find()
         .limit(limit)
         .skip((page - 1) * limit)
         .sort({ createdAt: -1 });
