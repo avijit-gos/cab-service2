@@ -23,7 +23,7 @@ class ReviewsController {
                 throw createError.BadRequest({ message: "Car ID not provided" });
             } 
              // Check if request body's content is provided and valid
-            else if (!req.body.content || !req.body.content.trim()) {
+            else if (!req.body.content) {
                 throw createError.BadRequest({ message: "Invalid request" });
             }
 
@@ -32,7 +32,8 @@ class ReviewsController {
                 _id: new mongoose.Types.ObjectId(),
                 content: req.body.content,
                 user: req.user._id, // User ID is retrieved from authentication token
-                car: carID
+                car: carID,
+                rating: Number(req.body.rating)
             });
         
             // Save review data in the database
@@ -47,9 +48,9 @@ class ReviewsController {
             return res.status(201).json({ message: "Successfully submitted your review", statusCode: 201, review: reviewData });
         } 
         catch (error) {
-        next(error);
+            next(error);
+        }
     }
-}
 
 
     /**

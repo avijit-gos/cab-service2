@@ -36,6 +36,11 @@ app.use("/api/reviews", require("./src/routes/reviews/reviewsRoute"));
 
 app.use("/api/drivers", require("./src/routes/driver/driverRoutes"))
 
+app.use("/api/notification", require("./src/routes/notification/notificatiRoute"));
+
+app.use("/api/enquire", require("./src/routes/enquireRoute/enquireRoute"))
+
+
 app.use(async (req, res, next) => {
   next(createError.NotFound("Page not found"));
 });
@@ -51,6 +56,17 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server listening on port:${port}`);
 });
+
+const io = require("socket.io")(server, {
+  transports: ["websocket"],
+  pingTimeout: 360000,
+  cors: {
+    origin: "*",
+  },
+});
+io.on("connection", (socket) => {
+  console.log("Socket connected...")
+})
