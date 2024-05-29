@@ -36,12 +36,14 @@ class BookCabController {
       ) {
         throw createError.BadRequest({ message: "Invalid format" });
       }
+      const carData = await Car.findById(req.body.car);
+
       // calculate cab fare
       const distance = 2;
       const costPerKM = 100;
       const costPerExtraPessenger = 150;
       const cabFare =
-        distance * costPerKM + costPerExtraPessenger * req.body.extraPassengers;
+        distance * costPerKM + costPerExtraPessenger * req.body.extraPassengers + carData.price;
 
       // calculate wallet point
       // const walletPoints = distance * 1;
@@ -64,7 +66,6 @@ class BookCabController {
         car: req.body.car,
       });
       const isBooked = await Car.findById(req.body.car).select("isBooked");
-      console.log(isBooked);
       if (isBooked.isBooked) {
         return res.status(200).json({ message: "this car alredy booked" });
       }
