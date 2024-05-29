@@ -283,7 +283,7 @@ class BookCabController {
           .populate({
             path: "user",
             select: "name email phone profile_img",
-          })
+          }).populate("car").populate("driver")
           .sort({ createdAt: -1 }); // Sort bookings based on creation date in descending order
         // Respond with the list of bookings
         return res.status(200).json({ statusCode: 200, data: list });
@@ -295,7 +295,7 @@ class BookCabController {
           .populate({
             path: "user",
             select: "name email phone profile_img",
-          })
+          }).populate("car").populate("driver")
           .sort({ createdAt: -1 }); // Sort bookings based on creation date in descending order
         // Respond with the list of bookings
         return res.status(200).json({ statusCode: 200, data: list });
@@ -307,7 +307,7 @@ class BookCabController {
           .populate({
             path: "user",
             select: "name email phone profile_img",
-          })
+          }).populate("car").populate("driver")
           .sort({ createdAt: -1 }); // Sort bookings based on creation date in descending order
         // Respond with the list of bookings
         return res.status(200).json({ statusCode: 200, data: list });
