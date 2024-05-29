@@ -49,7 +49,12 @@ class EnquireController {
 
     async updateEnquire(req, res, next) {
         try {
-            
+          if(!req.params.id) {
+            throw createError.BadRequest({message: "Enquire ID is not found"})
+          }  else {
+            const updateEnquire = await Enquire.findByIdAndUpdate(req.params.id, {$set: {status: "read"}}, {new: true});
+            return res.status(200).json({message: "Enquire message has been read", statusCode: 200, data: updateEnquire})
+          }
         } catch (error) {
             next(error)
         }
