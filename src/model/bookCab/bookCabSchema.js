@@ -26,7 +26,7 @@ const BookCabSchema = mongoose.Schema(
     paymentDate: { type: Date }, // Date of payment
     status: {
       type: String,
-      enum: ["active", "inactive", "pending"],
+      enum: ["active", "inactive", "pending", "request"],
       default: "pending",
     },
     distance: { type: Number, default: 0 },

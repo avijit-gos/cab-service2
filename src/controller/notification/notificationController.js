@@ -1,3 +1,4 @@
+const createHttpError = require("http-errors");
 const AdminNotification = require("../../model/notification/adminNotification");
 const Notification = require("../../model/notification/userNotification")
 class NotificationController {
@@ -23,6 +24,19 @@ class NotificationController {
         }
         catch(error) {
             next(error);
+        }
+    }
+
+    async updateNotification(req, res, next) {
+        try {
+            if(!req.params.id) {
+                throw createHttpError.BadRequest({message: "Invalid notification id"})
+            }
+            const updateNotification = await AdminNotification.findByIdAndUpdate(req.params.id, {$set: {isRead: true}}, {new: true});
+            return res.status(200).json({messag: "Message read", status: 200})
+        }
+        catch(error) {
+            next(error)
         }
     }
 }
