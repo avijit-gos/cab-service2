@@ -39,6 +39,19 @@ class NotificationController {
             next(error)
         }
     }
+
+    async updateUserNotification(req, res, next) {
+        try {
+            if(!req.params.id) {
+                throw createHttpError.BadRequest({message: "Invalid notification id"})
+            }
+            const updateNotification = await Notification.findByIdAndUpdate(req.params.id, {$set: {isRead: true}}, {new: true});
+            return res.status(200).json({messag: "Message read", status: 200})
+        }
+        catch(error) {
+            next(error)
+        }
+    }
 }
 
 module.exports = new NotificationController()

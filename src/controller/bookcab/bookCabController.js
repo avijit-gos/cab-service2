@@ -12,7 +12,8 @@ const {
   confirmationMail,
   sendCancelationMail,
 } = require("../../services/emailService");
-const AdminNotification = require("../../model/notification/adminNotification")
+const AdminNotification = require("../../model/notification/adminNotification");
+const Config = require("../../model/config/config");
 
 class BookCabController {
   /**
@@ -36,16 +37,20 @@ class BookCabController {
         throw createError.BadRequest({ message: "Invalid format" });
       }
       const carData = await Car.findById(req.body.car);
-
+      const configData = await Config.find();
+      // check that userf does not select more than 2 extra passenger
+      if(req.body.extraPassengers > configData[0].max_extrapassener) {
+        throw createError.BadRequest({message: "Cannot have more than 2 passener"})
+      }
       // calculate cab fare
       const distance = 2;
       const costPerKM = 100;
       const costPerExtraPessenger = 150;
       const cabFare =
-        distance * costPerKM + costPerExtraPessenger * req.body.extraPassengers + carData.price;
+        distance * Number(configData[0].distance_price) + Number(configData[0].passerner_cost) * req.body.extraPassengers + carData.price;
 
       // calculate wallet point
-      // const walletPoints = distance * 1;
+      const walletPoints = distance * 1;
 
       // Create new booking data object
       const newBookingData = BookCab({
@@ -57,7 +62,7 @@ class BookCabController {
         dropLocation: req.body.dropLocation,
         luggage: req.body.luggage,
         extraPassengers: req.body.extraPassengers,
-        extraPassengerFare: costPerExtraPessenger * req.body.extraPassengers,
+        extraPassengerFare: Number(configData[0].passerner_cost) * req.body.extraPassengers,
         fare: cabFare,
         // walletPoints,
         distance: distance,
