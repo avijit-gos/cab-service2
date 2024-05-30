@@ -13,7 +13,11 @@ const {
   cancelRideFromAdmin,
   getAllBookingList,
   confirmBooking,
-  cancelBookingList
+  cancelBookingList,
+  getPendinCarList,
+  getActiveCarList,
+  getInactiveCarList,
+  getCancelCarList
 } = require("../../controller/bookcab/bookCabController");
 const Authentication = require("../../middleware/authentication");
 const VerifyAdmin = require("../../middleware/verifyAdmin");
@@ -31,6 +35,11 @@ const AdminNotification = require("../../model/notification/adminNotification")
  * @param {Function} handler - Function to handle the creation of the booking
  */
 router.post("/create", Authentication, createBookingCab);
+
+router.get("/get-pending-list", Authentication, getPendinCarList)
+router.get("/get-active-list", Authentication, getActiveCarList)
+router.get("/get-inactive-list", Authentication, getInactiveCarList)
+router.get("/get-cancel-list", Authentication, getCancelCarList)
 
 router.post("/confirm-booking/:bookingId", Authentication, confirmBooking)
 

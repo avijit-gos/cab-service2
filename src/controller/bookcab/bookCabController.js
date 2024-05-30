@@ -360,7 +360,7 @@ class BookCabController {
       // update booking status to inactive
       await BookCab.findByIdAndUpdate(
         req.params.id,
-        { $set: { status: "inactive" } },
+        { $set: { status: "pending" } },
         { new: true }
       );
       // also update the car's status to false i.e car is available for new booking
@@ -471,7 +471,7 @@ class BookCabController {
       // booking status updated
       const bookingUpdate = await BookCab.findByIdAndUpdate(
         id,
-        { $set: { status: "inactive" } },
+        { $set: { status: "cancel" } },
         { new: true }
       );
       // update in driver status
@@ -514,6 +514,42 @@ class BookCabController {
       const limit = req.query.limit || 10;
       const result = await BookCab.find({status: 'request'}).limit(limit).skip(limit * (page-1));
       return res.status(200).json({statusCode: 200, data: result})
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async getPendinCarList(req, res, next) {
+    try {
+      const cars = await BookCab.find({status: "pending"}).populate("user").populate("car")
+      return res.status(200).json({statuscode: 200, cars})
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async getActiveCarList(req, res, next) {
+    try {
+      const cars = await BookCab.find({status: "active"}).populate("user").populate("car").populate("driver")
+      return res.status(200).json({statuscode: 200, cars})
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async getInactiveCarList(req, res, next) {
+    try {
+      const cars = await BookCab.find({status: "inactive"}).populate("user").populate("car").populate("driver")
+      return res.status(200).json({statuscode: 200, cars})
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async getCancelCarList(req, res, next) {
+    try {
+      const cars = await BookCab.find({status: "cancel"}).populate("user").populate("car").populate("driver")
+      return res.status(200).json({statuscode: 200, cars})
     } catch (error) {
       next(error)
     }

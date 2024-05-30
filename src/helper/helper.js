@@ -126,7 +126,6 @@ class Helper {
 
   async calculateTimeDiff(data) {
     try {
-      console.log(data)
       const travelDate = data.travelDate;
       const pickupTime = data.pickupTime;
       const now = new Date();
