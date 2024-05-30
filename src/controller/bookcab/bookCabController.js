@@ -13,6 +13,7 @@ const {
   sendCancelationMail,
 } = require("../../services/emailService");
 const AdminNotification = require("../../model/notification/adminNotification");
+const Notification = require("../../model/notification/userNotification")
 const Config = require("../../model/config/config");
 
 class BookCabController {
@@ -91,6 +92,7 @@ class BookCabController {
 
       const notificationObj = AdminNotification({
         _id: new mongoose.Types.ObjectId(),
+        title: "Booking",
         type: 1,
         from: req.user._id,
         booking:bookingData._id
@@ -351,6 +353,7 @@ class BookCabController {
          */
         const notificationObj = AdminNotification({
           _id: new mongoose.Types.ObjectId(),
+          title: "Cancel booking request",
           type: 2,
           from :req.user._id,
           booking:req.params.id
@@ -455,11 +458,19 @@ class BookCabController {
       /**
        * Send notification from ADMIN after successfully accept the booking request
        */
+      const notificationObj = Notification({
+        _id: new mongoose.Types.ObjectId(),
+        title: "Accept booking",
+        type: 1, 
+        to: bookingdata.user,
+        booking: bookingdata._id
+      })
+      const notificationData = await notificationObj.save();
       return res.status(200).json({
         message: "Successuly booked",
         statusCode: 200,
         bookingData: data,
-        
+        notification: notificationData
       });
     } catch (error) {
       next(error);
@@ -494,9 +505,20 @@ class BookCabController {
       /**
        * Send Notification to user after ADMIN successfully cqancel user ride
        */
+      /**
+       * Send notification from ADMIN after successfully accept the booking request
+       */
+      const notificationObj = Notification({
+        _id: new mongoose.Types.ObjectId(),
+        title: "Cancel booking",
+        type: 2, 
+        to: bookingData.user,
+        booking: bookingData._id
+      })
+      const notificationData = await notificationObj.save();
       return res
         .status(200)
-        .json({ message: "successfully canceled", statusCode: 200 });
+        .json({ message: "successfully canceled", statusCode: 200, notification: notificationData });
     } catch (error) {
       next(error);
     }
