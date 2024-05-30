@@ -11,7 +11,8 @@ class ConfigController {
             _id: new mongoose.Types.ObjectId(),
             distance_price: req.body.distance_price,
             max_extrapassener: req.body.max_extrapassener,
-            passerner_cost: req.body.passerner_cost
+            passerner_cost: req.body.passerner_cost,
+            wallet_point: req.body.wallet_point
           });
           const configData = await confiObj.save();
           return res.status(201).json({message: "Confi data has been saved", statusCode: 201, data: configData})
