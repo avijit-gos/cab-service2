@@ -5,6 +5,6 @@ const authentication = require("../../middleware/authentication");
 router.get("/admin", getNotifications);
 router.get("/user-notification", authentication, getUserNotification);
 router.put("/update/:id", updateNotification)
-router.put("/user-update/:id", updateNotification)
+router.put("/user-update/:id", updateUserNotification)
 
 module.exports = router;

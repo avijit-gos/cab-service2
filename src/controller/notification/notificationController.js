@@ -33,6 +33,7 @@ class NotificationController {
                 throw createHttpError.BadRequest({message: "Invalid notification id"})
             }
             const updateNotification = await AdminNotification.findByIdAndUpdate(req.params.id, {$set: {isRead: true}}, {new: true});
+           
             return res.status(200).json({messag: "Message read", status: 200})
         }
         catch(error) {
@@ -45,6 +46,7 @@ class NotificationController {
             if(!req.params.id) {
                 throw createHttpError.BadRequest({message: "Invalid notification id"})
             }
+            console.log("CAME HERE")
             const updateNotification = await Notification.findByIdAndUpdate(req.params.id, {$set: {isRead: true}}, {new: true});
             return res.status(200).json({messag: "Message read", status: 200})
         }
