@@ -210,23 +210,6 @@ class CarsController {
     try {
       const cars = await Cars.find({}).sort({ createdAt: -1 });
       return res.status(200).json({ statusCode: 200, data: cars });
-      // const bookingType = req.query.isBooking || "all";
-      // if (bookingType === "all") {
-      //   const cars = await Cars.find({}).sort({ createdAt: -1 });
-      //   return res.status(200).json({ statusCode: 200, data: cars });
-      // } else if (bookingType === "true") {
-      //   const cars = await Cars.find({ isBooked: true }).sort({
-      //     createdAt: -1,
-      //   });
-      //   return res.status(200).json({ statusCode: 200, data: cars });
-      // } else if (bookingType === "false") {
-      //   console.log("Querying for cars where isBooked is false");
-      //   const cars = await Cars.find({ isBooked: false }).sort({
-      //     createdAt: -1,
-      //   });
-      //   console.log(`Found cars: ${cars.length}`);
-      //   return res.status(200).json({ statusCode: 200, data: cars });
-      // }
     } catch (error) {
       next(error);
     }
