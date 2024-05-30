@@ -14,6 +14,8 @@ const BookCabSchema = mongoose.Schema(
     luggage: { type: Number, default: 0 },
     extraPassengers: { type: Number, default: 0, max: 2 },
     extraPassengerFare: { type: Number, default: 0 }, // Extra fare for additional passengers
+    totalDistance: {type: String},
+    distance_price: {type: String},
     fare: { type: Number, required: true }, // Fare calculated based on total distance
     bookingDetails: { type: String }, // Additional booking details
     // walletPoints: { type: Number, default: 0 }, // User's wallet points

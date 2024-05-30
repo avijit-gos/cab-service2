@@ -40,7 +40,9 @@ app.use("/api/notification", require("./src/routes/notification/notificatiRoute"
 
 app.use("/api/enquire", require("./src/routes/enquireRoute/enquireRoute"));
 
-app.use("/api/config", require("./src/routes/config/configRoute"))
+app.use("/api/config", require("./src/routes/config/configRoute"));
+
+app.use("/api/content", require("./src/routes/content/contentRoute"))
 
 
 app.use(async (req, res, next) => {

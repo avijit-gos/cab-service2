@@ -47,9 +47,27 @@ class BookCabController {
       const distance = 2;
       const costPerKM = 100;
       const costPerExtraPessenger = 150;
-      const cabFare =
+      const totalCost =
         distance * Number(configData[0].distance_price) + Number(configData[0].passerner_cost) * req.body.extraPassengers + carData.price;
 
+        const result = {
+          travelDate: req.body.travelDate,
+          pickupTime: req.body.pickupTime,
+          pickupLocation: req.body.pickupLocation,
+          dropLocation: req.body.dropLocation,
+          primaryDropLocation: req.body.primaryDropLocation,
+          carDetails: carData,
+          totalCose: totalCost,
+          distanceCost: distance * Number(configData[0].distance_price),
+          extra_passenger_cost: Number(configData[0].passerner_cost) * req.body.extraPassengers
+        };
+        return res.status(201).json({
+          message: "Your cab booking is estimate",
+          statusCode: 201,
+          bookingDetails: result
+        });
+
+        /*
       // calculate wallet point
       const walletPoints = distance * 1;
 
@@ -107,6 +125,7 @@ class BookCabController {
         notificationData
         
       });
+      */
     } catch (error) {
       next(error);
     }
@@ -114,21 +133,42 @@ class BookCabController {
 
   async confirmBooking(req, res, next) {
     try {
-      const bookingId = req.params.bookingId;
-      const { status, paymentStatus } = req.body;
-      if (!bookingId) {
-        throw createError.BadRequest({ message: "Invalid booking ID" });
-      }
-      const updateBooking = await BookCab.findByIdAndUpdate(
-        bookingId,
-        { $set: { status: status, paymentStatus: paymentStatus } },
-        { new: true }
-      );
-      return res.status(200).json({
-        message: "Successfully car booked",
-        statusCode: 200,
-        data: updateBooking,
+      // const bookingId = req.params.bookingId;
+      // const { status, paymentStatus } = req.body;
+      // if (!bookingId) {
+      //   throw createError.BadRequest({ message: "Invalid booking ID" });
+      // }
+      // const updateBooking = await BookCab.findByIdAndUpdate(
+      //   bookingId,
+      //   { $set: { status: status, paymentStatus: paymentStatus } },
+      //   { new: true }
+      // );
+      // return res.status(200).json({
+      //   message: "Successfully car booked",
+      //   statusCode: 200,
+      //   data: updateBooking,
+      // });
+      const configData = await Config.find();
+      const totalCost =
+        distance * Number(configData[0].distance_price) + Number(configData[0].passerner_cost) * req.body.extraPassengers + carData.price;
+      // Create new booking data object
+      const newBookingData = BookCab({
+        _id: new mongoose.Types.ObjectId(),
+        user: req.user._id,
+        travelDate: req.body.travelDate,
+        pickupTime: req.body.pickupTime,
+        pickupLocation: req.body.pickupLocation,
+        dropLocation: req.body.dropLocation,
+        luggage: req.body.luggage,
+        extraPassengers: req.body.extraPassengers,
+        extraPassengerFare: Number(configData[0].passerner_cost) * req.body.extraPassengers,
+        fare: cabFare,
+        // walletPoints,
+        distance: distance,
+        paymentStatus: req.body.paymentStatus,
+        car: req.body.car,
       });
+      console.log(newBookingData)
     } catch (error) {
       next(error);
     }

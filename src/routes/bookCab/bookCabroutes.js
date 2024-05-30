@@ -41,7 +41,7 @@ router.get("/get-active-list", Authentication, getActiveCarList)
 router.get("/get-inactive-list", Authentication, getInactiveCarList)
 router.get("/get-cancel-list", Authentication, getCancelCarList)
 
-router.post("/confirm-booking/:bookingId", Authentication, confirmBooking)
+router.post("/confirm-booking", Authentication, confirmBooking)
 
 /**
  * PUT route to update details of a specific booking.

@@ -1,9 +1,14 @@
 const mongoose = require("mongoose");
 
-const Contentschema = monngoose.Schema({
+const Contentschema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     slug: {type: String, default: "about"},
     title: {type: String, default: ""},
+    status: {
+        type: String,
+        enum: ["active", "inactive"],
+        default: "active",
+    },
     description: {type: String, default: ""},
     tags: { type: [String], default: [] },
     contact_info: {
@@ -14,4 +19,6 @@ const Contentschema = monngoose.Schema({
             tw: {type: String},
         }
     }
-}, {timestamps: true})
+}, {timestamps: true});
+
+module.exports = mongoose.model("Content", Contentschema)
