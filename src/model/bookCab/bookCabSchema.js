@@ -30,7 +30,7 @@ const BookCabSchema = mongoose.Schema(
     paymentDate: { type: Date }, // Date of payment
     status: {
       type: String,
-      enum: ["active", "inactive", "pending", "cancel"],
+      enum: ["active", "inactive", "pending", "cancel", "completed"],
       default: "active",
     },
     distance: { type: Number, default: 0 },
@@ -40,3 +40,12 @@ const BookCabSchema = mongoose.Schema(
   { timestamps: true }
 );
 module.exports = mongoose.model("BookCab", BookCabSchema);
+
+/**
+ * Status Details:
+ * 1. Active: When user booked a cab.
+ * 2. Inactive: When user cancel booking. (before 24 hours),
+ * 3. Pendeing: When user requested ADMIN to cancel user's booking.
+ * 4. Cancel: When ADMIN cancel user's booking.
+ * 5. Completed: After successfully completed the ride
+ */

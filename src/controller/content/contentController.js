@@ -56,9 +56,9 @@ class ContentController {
         }
     }
 
-    async updateAboutStatus(req, res, next) {
+    async updatestatus(req, res, next) {
         try {
-           const updateStatus = await Content.findOneAndUpdate({slug: "about"}, {status: req.body.status}, {new: true});
+           const updateStatus = await Content.findByIdAndUpdate(req.params.id, {status: req.body.status}, {new: true});
            return res.status(200).json({message: "About page system", statusCode: 200, data: updateStatus})
         } catch (error) {
             next(error)
@@ -83,6 +83,15 @@ class ContentController {
             return res.status(200).json({message: "Content has been updated", statusCode: 200, data: updateData});
         } catch (error) {
            next(error) 
+        }
+    }
+
+    async getAllContents(req, res, next) {
+        try {
+            const data = await Content.find({});
+            return res.status(200).json({statusCode: 200, data})
+        } catch (error) {
+            next(error)
         }
     }
 }

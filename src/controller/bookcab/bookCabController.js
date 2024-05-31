@@ -68,66 +68,6 @@ class BookCabController {
           statusCode: 201,
           bookingDetails: result
         });
-
-        /*
-      // calculate wallet point
-      const walletPoints = distance * 1;
-
-      // Create new booking data object
-      const newBookingData = BookCab({
-        _id: new mongoose.Types.ObjectId(),
-        user: req.user._id,
-        travelDate: req.body.travelDate,
-        pickupTime: req.body.pickupTime,
-        pickupLocation: req.body.pickupLocation,
-        dropLocation: req.body.dropLocation,
-        luggage: req.body.luggage,
-        extraPassengers: req.body.extraPassengers,
-        extraPassengerFare: Number(configData[0].passerner_cost) * req.body.extraPassengers,
-        fare: cabFare,
-        // walletPoints,
-        distance: distance,
-        paymentStatus: req.body.paymentStatus,
-        car: req.body.car,
-      });
-      const isBooked = await Car.findById(req.body.car).select("isBooked");
-      if (isBooked.isBooked) {
-        return res.status(200).json({ message: "this car alredy booked" });
-      }
-      // Save the new booking data
-      const bookingData = await newBookingData.save();
-      // Populate user details in booking data
-      await bookingData.populate({
-        path: "user",
-        select: "name email phone profile_img",
-      });
-      await bookingData.populate('car')
-
-      await Car.findByIdAndUpdate(
-        req.body.car,
-        { $set: { isBooked: true } },
-        { new: true }
-      );
-      // Send notification to admin after successfully booked the cab
-
-      const notificationObj = AdminNotification({
-        _id: new mongoose.Types.ObjectId(),
-        title: "Booking",
-        type: 1,
-        from: req.user._id,
-        booking:bookingData._id
-      })
-
-      const notificationData = await notificationObj.save();
-      // Respond with success message and booking data
-      return res.status(201).json({
-        message: "Your cab booking is successfull",
-        statusCode: 201,
-        bookingData,
-        notificationData
-        
-      });
-      */
     } catch (error) {
       next(error);
     }
@@ -431,7 +371,7 @@ class BookCabController {
       // update booking status to inactive
       await BookCab.findByIdAndUpdate(
         req.params.id,
-        { $set: { status: "pending" } },
+        { $set: { status: "inactive" } },
         { new: true }
       );
       // also update the car's status to false i.e car is available for new booking
@@ -460,6 +400,7 @@ class BookCabController {
         throw createError.BadRequest({ message: "Invalid request" });
       }
       const bookingDetails = await BookCab.findById(req.params.id);
+      await BookCab.findByIdAndUpdate(req.params,id, {$set: {status: "completed"}}, {new: true})
       const walletPoint =
         bookingDetails.distance * Number(process.env.WALLET_POINT);
       // updating the car booking status from true to false
