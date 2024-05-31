@@ -59,7 +59,9 @@ class BookCabController {
           carDetails: carData,
           totalCose: totalCost,
           distanceCost: distance * Number(configData[0].distance_price),
-          extra_passenger_cost: Number(configData[0].passerner_cost) * req.body.extraPassengers
+          extra_passenger_cost: Number(configData[0].passerner_cost) * req.body.extraPassengers,
+          luggage: req.body.luggage,
+          extraPassengers: req.body.extraPassengers
         };
         return res.status(201).json({
           message: "Your cab booking is estimate",
@@ -133,42 +135,63 @@ class BookCabController {
 
   async confirmBooking(req, res, next) {
     try {
-      // const bookingId = req.params.bookingId;
-      // const { status, paymentStatus } = req.body;
-      // if (!bookingId) {
-      //   throw createError.BadRequest({ message: "Invalid booking ID" });
-      // }
-      // const updateBooking = await BookCab.findByIdAndUpdate(
-      //   bookingId,
-      //   { $set: { status: status, paymentStatus: paymentStatus } },
-      //   { new: true }
-      // );
-      // return res.status(200).json({
-      //   message: "Successfully car booked",
-      //   statusCode: 200,
-      //   data: updateBooking,
-      // });
-      const configData = await Config.find();
-      const totalCost =
-        distance * Number(configData[0].distance_price) + Number(configData[0].passerner_cost) * req.body.extraPassengers + carData.price;
-      // Create new booking data object
+      const dateStamp = new Date().getTime().toString();
+      console.log(dateStamp)
+      const book_id = "#" + dateStamp.slice(9, 13);
       const newBookingData = BookCab({
         _id: new mongoose.Types.ObjectId(),
+        book_id,
         user: req.user._id,
+        car: req.body.car,
         travelDate: req.body.travelDate,
         pickupTime: req.body.pickupTime,
         pickupLocation: req.body.pickupLocation,
+        primaryDrop: req.body.primaryDropLocation,
         dropLocation: req.body.dropLocation,
         luggage: req.body.luggage,
         extraPassengers: req.body.extraPassengers,
-        extraPassengerFare: Number(configData[0].passerner_cost) * req.body.extraPassengers,
-        fare: cabFare,
-        // walletPoints,
-        distance: distance,
-        paymentStatus: req.body.paymentStatus,
-        car: req.body.car,
+        extraPassengerFare: req.body.extra_passenger_cost,
+        totalDistance: 2, // this distance should be calculated
+        distance_price: req.body.distanceCost,
+        fare: req.body.totalCost
       });
-      console.log(newBookingData)
+      const isBooked = await Car.findById(req.body.car).select("isBooked");
+      if (isBooked.isBooked) {
+        return res.status(200).json({ message: "this car alredy booked" });
+      }
+      // Save the new booking data
+      const bookingData = await newBookingData.save();
+      // Populate user details in booking data
+      await bookingData.populate({
+        path: "user",
+        select: "name email phone profile_img",
+      });
+      await bookingData.populate('car')
+
+      await Car.findByIdAndUpdate(
+        req.body.car,
+        { $set: { isBooked: true } },
+        { new: true }
+      );
+      // Send notification to admin after successfully booked the cab
+
+      const notificationObj = AdminNotification({
+        _id: new mongoose.Types.ObjectId(),
+        title: "Booking",
+        type: 1,
+        from: req.user._id,
+        booking:bookingData._id
+      })
+
+      const notificationData = await notificationObj.save();
+      // Respond with success message and booking data
+      return res.status(201).json({
+        message: "Your cab booking is successfull",
+        statusCode: 201,
+        bookingData,
+        notificationData
+        
+      });
     } catch (error) {
       next(error);
     }
