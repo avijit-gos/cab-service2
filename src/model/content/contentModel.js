@@ -10,15 +10,6 @@ const Contentschema = mongoose.Schema({
         default: "active",
     },
     description: {type: String, default: ""},
-    tags: { type: [String], default: [] },
-    contact_info: {
-        website: {type: String, default: ""},
-        phone: {type: String},
-        social: {
-            fb: {type: String},
-            tw: {type: String},
-        }
-    }
 }, {timestamps: true});
 
 module.exports = mongoose.model("Content", Contentschema)
