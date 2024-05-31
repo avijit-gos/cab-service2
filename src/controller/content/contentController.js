@@ -1,6 +1,7 @@
 const Content = require("../../model/content/contentModel");
 const mongoose = require("mongoose");
 const ceateError = require("http-errors");
+const createHttpError = require("http-errors");
 
 class ContentController {
     constructor() {}
@@ -31,9 +32,19 @@ class ContentController {
 
     async getAboutUs(req, res, next) {
         try {
-           const data = await Content.find({slug: req.query.slug});
+           const data = await Content.find({slug: "about"});
            return res.status(200).json({statusCode: 200, data})
         } catch (error) {
+            next(error)
+        }
+    }
+
+    async getPrivacy(req, res, next) {
+        try {
+            const data = await Content.find({slug: "privacy"});
+           return res.status(200).json({statusCode: 200, data})
+        }
+        catch(error) {
             next(error)
         }
     }
@@ -42,6 +53,36 @@ class ContentController {
         try {}
         catch(error) {
             next(error)
+        }
+    }
+
+    async updateAboutStatus(req, res, next) {
+        try {
+           const updateStatus = await Content.findOneAndUpdate({slug: "about"}, {status: req.body.status}, {new: true});
+           return res.status(200).json({message: "About page system", statusCode: 200, data: updateStatus})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async updatePrivacyStatus(req, res, next) {
+        try {
+           const updateStatus = await Content.findOneAndUpdate({slug: "privacy"}, {status: req.body.status}, {new: true});
+           return res.status(200).json({message: "Privacy policy page system", statusCode: 200, data: updateStatus})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async updateContent(req, res, next) {
+        try {
+            if(!req.params.id) {
+                throw createHttpError.BadRequest({message: "Content id is not found"});
+            }
+            const updateData = await Content.findByIdAndUpdate(req.params.id, req.body, {new: true});
+            return res.status(200).json({message: "Content has been updated", statusCode: 200, data: updateData});
+        } catch (error) {
+           next(error) 
         }
     }
 }
