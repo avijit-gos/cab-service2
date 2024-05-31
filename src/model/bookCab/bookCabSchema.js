@@ -5,11 +5,13 @@ const mongoose = require("mongoose");
 const BookCabSchema = mongoose.Schema(
   {
     _id: { type: mongoose.Schema.Types.ObjectId },
+    book_id: {type: String},
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Reference to the user who made the booking
     car: { type: mongoose.Schema.Types.ObjectId, ref: "Cars" },
     travelDate: { type: String, required: true },
     pickupTime: { type: String, required: true },
     pickupLocation: { type: String, required: true },
+    primaryDrop: {type: String, trim: true}, // this is primary drop loaction
     dropLocation: { type: [String], default: [] },
     luggage: { type: Number, default: 0 },
     extraPassengers: { type: Number, default: 0, max: 2 },
