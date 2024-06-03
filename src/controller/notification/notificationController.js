@@ -1,6 +1,8 @@
 const createHttpError = require("http-errors");
 const AdminNotification = require("../../model/notification/adminNotification");
-const Notification = require("../../model/notification/userNotification")
+const Notification = require("../../model/notification/userNotification");
+const NotificationTemplate = require("../../model/notification/notificationTemplate");
+const { default: mongoose } = require("mongoose");
 class NotificationController {
     constructor() {}
 
@@ -54,6 +56,32 @@ class NotificationController {
             next(error)
         }
     }
+
+    async createNotification(req, res, next) {
+        try {
+            const {title, description} = req.body;
+            const newTemplate = NotificationTemplate({
+                _id: new mongoose.Types.ObjectId(),
+                title: title,
+                description: description
+            });
+            const templateData = await newTemplate.save();
+            return res.status(201).json({message: "New template has been saved", statusCode: 201, data: templateData})
+        }
+        catch(error) {
+            next(error)
+        }
+    }
+
+    async getNotificationTemplate(req, res, next) {
+        try {
+            console.log("****")
+        }
+        catch(error) {
+            next(error)
+        }
+    }
+
 }
 
 module.exports = new NotificationController()
