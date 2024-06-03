@@ -1,7 +1,6 @@
 const Content = require("../../model/content/contentModel");
 const mongoose = require("mongoose");
 const ceateError = require("http-errors");
-const createHttpError = require("http-errors");
 
 class ContentController {
     constructor() {}
@@ -111,10 +110,11 @@ class ContentController {
     async getContentById(req, res, next) {
         try {
           if(!req.params.id) {
-            throw createHttpError.BadRequest({message: "Invalid ID"})
-          }  
-          const data = await Content.findById(req.params.id);
-          return res.status(200).json({statusCode: 200, data})
+            throw ceateError.BadRequest({message: "ID not found"})
+          } else {
+            const content = await Content.findById(req.params.id);
+            return res.status(200).json({message: "Get content",  statusCode: 200, data: content})
+          }
         } catch (error) {
            next(error); 
         }
