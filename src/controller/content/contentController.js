@@ -106,6 +106,19 @@ class ContentController {
             next(error)
         }
     }
+
+    async getContentById(req, res, next) {
+        try {
+          if(!req.params.id) {
+            throw ceateError.BadRequest({message: "ID not found"})
+          } else {
+            const content = await Content.findById(req.params.id);
+            return res.status(200).json({message: "Get content",  statusCode: 200, data: content})
+          }
+        } catch (error) {
+           next(error); 
+        }
+    }
 }
 
 module.exports = new ContentController()

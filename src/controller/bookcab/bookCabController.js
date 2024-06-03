@@ -395,12 +395,16 @@ class BookCabController {
   }
 
   async claimToken(req, res, next) {
+    console.log("********")
     try {
       if (!req.params.id) {
         throw createError.BadRequest({ message: "Invalid request" });
       }
       const bookingDetails = await BookCab.findById(req.params.id);
-      await BookCab.findByIdAndUpdate(req.params,id, {$set: {status: "completed"}}, {new: true})
+      if(!bookingDetails) {
+        throw createError.BadRequest({message: "No booking details found"})
+      }
+      await BookCab.findByIdAndUpdate(req.params.id, {$set: {status: "completed"}}, {new: true})
       const walletPoint =
         bookingDetails.distance * Number(process.env.WALLET_POINT);
       // updating the car booking status from true to false
@@ -411,6 +415,7 @@ class BookCabController {
         { $set: { isBooked: false } },
         { new: true }
       );
+      console.log("CAR:::", updateCarStatus)
 
       // if the ride is completed then update the wallet document with wallet token
       const walletData = UserWallet({
