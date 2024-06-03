@@ -1,7 +1,6 @@
 const Content = require("../../model/content/contentModel");
 const mongoose = require("mongoose");
 const ceateError = require("http-errors");
-const createHttpError = require("http-errors");
 
 class ContentController {
     constructor() {}
@@ -91,6 +90,19 @@ class ContentController {
             const data = await Content.find({});
             return res.status(200).json({statusCode: 200, data})
         } catch (error) {
+            next(error)
+        }
+    }
+
+    async deleteContent(req, res, next) {
+        try {
+            if(!req.params.id) {
+                throw ceateError.BadRequest({message: "Content id is not present"})
+            }
+            const deletedData = await Content.findByIdAndDelete(req.params.id);
+            return res.status(200).json({message: "Content has been deleted", statusCode: 200, data: deletedData})
+        }
+        catch(error) {
             next(error)
         }
     }
