@@ -10,6 +10,6 @@ router.put("/update-status/:id", updatestatus);
 router.put("/update-content/:id", updateContent);
 router.get("/", getAllContents);
 router.get("/get-by-id/:id", getContentById)
-router.delete(":id", deleteContent);
+router.delete("/delete/:id", deleteContent);
 
 module.exports = router;

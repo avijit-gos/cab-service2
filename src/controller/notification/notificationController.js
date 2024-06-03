@@ -75,7 +75,41 @@ class NotificationController {
 
     async getNotificationTemplate(req, res, next) {
         try {
-            console.log("****")
+           const data = await NotificationTemplate.find({});
+           return res.status(200).json({status: 200, data})
+        }
+        catch(error) {
+            next(error)
+        }
+    }
+
+    async getNotificationTemplateById(req, res, next) {
+        try {
+            if(!req.params.id) throw createHttpError.BadRequest({message: "ID not found"})
+           const data = await NotificationTemplate.findById(req.params.id);
+           return res.status(200).json({status: 200, data})
+        }
+        catch(error) {
+            next(error)
+        }
+    }
+
+    async updateNotificationTemplateById(req, res, next) {
+        try {
+            if(!req.params.id) throw createHttpError.BadRequest({message: "ID not found"})
+           const data = await NotificationTemplate.findByIdAndUpdate(req.params.id, req.body, {new: true});
+           return res.status(200).json({message: "Template has been updated", status: 200, data})
+        }
+        catch(error) {
+            next(error)
+        }
+    }
+
+    async deleteNotificationTemplateById(req, res, next) {
+        try {
+            if(!req.params.id) throw createHttpError.BadRequest({message: "ID not found"})
+           const data = await NotificationTemplate.findByIdAndDelete(req.params.id,);
+           return res.status(200).json({message: "Template has been deleted", status: 200, data})
         }
         catch(error) {
             next(error)

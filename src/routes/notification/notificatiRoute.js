@@ -4,7 +4,10 @@ const {getNotifications,
      updateNotification,
       updateUserNotification,
       createNotification,
-      getNotificationTemplate
+      getNotificationTemplate,
+      getNotificationTemplateById,
+      updateNotificationTemplateById,
+      deleteNotificationTemplateById
     } = require("../../controller/notification/notificationController");
 const authentication = require("../../middleware/authentication");
 const verifyAdmin = require("../../middleware/verifyAdmin");
@@ -18,5 +21,8 @@ router.put("/user-update/:id", updateUserNotification)
  */
 router.post("/create", verifyAdmin ,createNotification);
 router.get("/get-all-templates", verifyAdmin, getNotificationTemplate)
+router.get("/:id", verifyAdmin, getNotificationTemplateById)
+router.put("/update-template/:id", updateNotificationTemplateById)
+router.delete("/delete-template/:id", deleteNotificationTemplateById)
 
 module.exports = router;
