@@ -4,6 +4,7 @@ const createError = require("http-errors");
 const mongoose = require("mongoose");
 const Cars = require("../../model/cars/carsSchema");
 const { uploadImage } = require("../../helper/helper");
+const Config = require("../../model/config/config");
 
 class CarsController {
   constructor() {}
@@ -212,6 +213,26 @@ class CarsController {
       return res.status(200).json({ statusCode: 200, data: cars });
     } catch (error) {
       next(error);
+    }
+  }
+
+  async getCarsRecomendation(req, res, next) {
+    try {
+      const page = req.query.page || 1;
+      const limit = req.query.limit || 10;
+      const configData = await Config.find();
+      console.log(configData)
+      /* Here we used a static distance data */
+      const distance = 3;
+      const totalCost =
+        distance * Number(configData[0].distance_price);
+      const cars = await Cars.find({isBooked: false}).skip(limit*(page-1)).limit(limit);
+      for(let i=0; i<cars.length; i++) {
+        cars[i].price +=totalCost 
+      }
+      return res.status(200).json({statusCode: 200, data: cars})
+    } catch (error) {
+      next(error)
     }
   }
 }

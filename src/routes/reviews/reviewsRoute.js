@@ -1,5 +1,6 @@
 const router = require("express").Router();
-const { createReview, getAllreviews, updateReview, deleteReview } = require("../../controller/reviews/reviewsController");
+const { createReview, getAllreviews, updateReview, deleteReview, getBookingReview } = require("../../controller/reviews/reviewsController");
+const authentication = require("../../middleware/authentication");
 const Authentication = require("../../middleware/authentication");
 const VerifyAdmin = require("../../middleware/verifyAdmin");
 
@@ -52,5 +53,7 @@ router.patch("/update/:id",Authentication, updateReview);
  * @param {Function} handler - Function to handle the deletion of the review
  */
 router.delete("/delete/:id",Authentication, deleteReview);
+
+router.get("/:carId", authentication, getBookingReview)
 
 module.exports = router;

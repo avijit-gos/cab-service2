@@ -110,6 +110,15 @@ class ReviewsController {
             next(error)
         }
     }
+
+    async getBookingReview(req, res, next) {
+        try{
+            const data = await Reviews.findOne({$and: [{car: req.params.carId}, {user: req.user._id}]})
+        }
+        catch(error) {
+            next(error)
+        }
+    }
 }
 
 module.exports = new ReviewsController()

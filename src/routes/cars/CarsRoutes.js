@@ -8,6 +8,7 @@ const {
   updateCarDetails,
   deleteCarDetails,
   getListOfCars,
+  getCarsRecomendation
 } = require("../../controller/cars/carsController");
 const VerifyAdmin = require("../../middleware/verifyAdmin");
 const router = require("express").Router();
@@ -84,5 +85,6 @@ router.put("/update/:id", VerifyAdmin, updateCarDetails);
  */
 router.delete("/delete/:id", VerifyAdmin, deleteCarDetails);
 router.get("/", getListOfCars);
+router.post("/recomendation", getCarsRecomendation)
 
 module.exports = router;
