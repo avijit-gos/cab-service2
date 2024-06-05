@@ -40,7 +40,9 @@ const CarSchema = mongoose.Schema(
       type: Boolean,
       default: false, // if isBooked is true then that means cars is booked...
     },
-    reviews: [{type: mongoose.Types.ObjectId, ref: "reviews"}]
+    reviews: [{type: mongoose.Types.ObjectId, ref: "reviews"}],
+    rating: {type: Number, default: 0},
+    user_rating: [{type: mongoose.Types.ObjectId, ref: "User"}]
   },
   { timestamps: true }
 );

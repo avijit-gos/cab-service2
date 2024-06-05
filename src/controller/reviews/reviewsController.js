@@ -16,34 +16,27 @@ class ReviewsController {
     */
     async createReview(req, res, next) {
         try {
-            // Extract car ID from request parameters
-            const carID = req.params.carId;
             // Check if car ID is provided
-            if (!carID) {
+            if (!req.params.carId) {
                 throw createError.BadRequest({ message: "Car ID not provided" });
             } 
-             // Check if request body's content is provided and valid
             else if (!req.body.content) {
                 throw createError.BadRequest({ message: "Invalid request" });
             }
-
-            // Create review object
             const reviewObj = Reviews({
                 _id: new mongoose.Types.ObjectId(),
                 content: req.body.content,
-                user: req.user._id, // User ID is retrieved from authentication token
-                car: carID,
-                rating: Number(req.body.rating)
+                car: req.params.carId,
+                user: req.user._id,
+                bookId: req.body.bookingId
             });
-        
-            // Save review data in the database
             const reviewData = await reviewObj.save();
-            // Update review ID in cars collection
-            const updateCars = await Cars.findByIdAndUpdate(
-                carID,
-                { $addToSet: { reviews: reviewObj._id } },
-                { new: true }
-            );
+            if(req.body.rating > 0 ) {
+                await Cars.findByIdAndUpdate(req.params.carId, { $inc: { rating: Number(req.body.rating) }, $addToSet: { user_rating: req.user._id } }, {new: true});
+            }
+            else {
+                await Cars.findByIdAndUpdate(req.params.carId, {$addToSet: {user_rating: req.user._id}}, {new: true});
+            }
             // Return success response with created review data
             return res.status(201).json({ message: "Successfully submitted your review", statusCode: 201, review: reviewData });
         } 

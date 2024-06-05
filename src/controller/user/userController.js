@@ -110,6 +110,26 @@ class UserController {
         }
       }
     } catch (error) {
+      const logData = {
+        controller: "User register",
+        controller_name: "User Controller",
+        email: req.user?.email || "", // Assuming email is available in req.user
+        ip: req.ip,
+        level: "error",
+        log_type: "ERROR",
+        message: {
+          body_data: req.body,
+          error:
+            err.message ||
+            "Some error occurred while retrieving tutorials.",
+          //user_id: req.user?.id || "", // Assuming user ID is available in req.user
+        },
+        method_name: "userRegister",
+        //name: req.user?.name, // Assuming name is available in req.user
+        timestamp: new Date().toISOString(),
+        user_id: req.user?.id || "", // Assuming user ID is available in req.user
+      };
+      logger.error(logData);
       next(error);
     }
   }
@@ -160,6 +180,26 @@ class UserController {
         }
       }
     } catch (error) {
+      const logData = {
+        controller: "User login",
+        controller_name: "User Controller",
+        email: req.user?.email || "", // Assuming email is available in req.user
+        ip: req.ip,
+        level: "error",
+        log_type: "ERROR",
+        message: {
+          body_data: req.body,
+          error:
+            err.message ||
+            "Some error occurred while retrieving tutorials.",
+          //user_id: req.user?.id || "", // Assuming user ID is available in req.user
+        },
+        method_name: "loginUser",
+        //name: req.user?.name, // Assuming name is available in req.user
+        timestamp: new Date().toISOString(),
+        user_id: req.user?.id || "", // Assuming user ID is available in req.user
+      };
+      logger.error(logData);
       next({ message: error.message });
     }
   }
@@ -187,6 +227,26 @@ class UserController {
         user: updateUserData,
       });
     } catch (error) {
+      const logData = {
+        controller: "User profile image",
+        controller_name: "User Controller",
+        email: req.user?.email || "", // Assuming email is available in req.user
+        ip: req.ip,
+        level: "error",
+        log_type: "ERROR",
+        message: {
+          body_data: req.body,
+          error:
+            err.message ||
+            "Some error occurred while retrieving tutorials.",
+          //user_id: req.user?.id || "", // Assuming user ID is available in req.user
+        },
+        method_name: "updateProfileImage",
+        //name: req.user?.name, // Assuming name is available in req.user
+        timestamp: new Date().toISOString(),
+        user_id: req.user?.id || "", // Assuming user ID is available in req.user
+      };
+      logger.error(logData);
       next(error);
     }
   }
@@ -216,6 +276,26 @@ class UserController {
         });
       }
     } catch (error) {
+      const logData = {
+        controller: "User profile name",
+        controller_name: "User Controller",
+        email: req.user?.email || "", // Assuming email is available in req.user
+        ip: req.ip,
+        level: "error",
+        log_type: "ERROR",
+        message: {
+          body_data: req.body,
+          error:
+            err.message ||
+            "Some error occurred while retrieving tutorials.",
+          //user_id: req.user?.id || "", // Assuming user ID is available in req.user
+        },
+        method_name: "updateProfileName",
+        //name: req.user?.name, // Assuming name is available in req.user
+        timestamp: new Date().toISOString(),
+        user_id: req.user?.id || "", // Assuming user ID is available in req.user
+      };
+      logger.error(logData);
       next(error);
     }
   }
@@ -252,6 +332,26 @@ class UserController {
         });
       }
     } catch (error) {
+      const logData = {
+        controller: "User profile email",
+        controller_name: "User Controller",
+        email: req.user?.email || "", // Assuming email is available in req.user
+        ip: req.ip,
+        level: "error",
+        log_type: "ERROR",
+        message: {
+          body_data: req.body,
+          error:
+            err.message ||
+            "Some error occurred while retrieving tutorials.",
+          //user_id: req.user?.id || "", // Assuming user ID is available in req.user
+        },
+        method_name: "updateProfileEmail",
+        //name: req.user?.name, // Assuming name is available in req.user
+        timestamp: new Date().toISOString(),
+        user_id: req.user?.id || "", // Assuming user ID is available in req.user
+      };
+      logger.error(logData);
       next(error);
     }
   }
@@ -282,6 +382,26 @@ class UserController {
         user: updateUserData,
       });
     } catch (error) {
+      const logData = {
+        controller: "User profile address",
+        controller_name: "User Controller",
+        email: req.user?.email || "", // Assuming email is available in req.user
+        ip: req.ip,
+        level: "error",
+        log_type: "ERROR",
+        message: {
+          body_data: req.body,
+          error:
+            err.message ||
+            "Some error occurred while retrieving tutorials.",
+          //user_id: req.user?.id || "", // Assuming user ID is available in req.user
+        },
+        method_name: "updateProfileAddress",
+        //name: req.user?.name, // Assuming name is available in req.user
+        timestamp: new Date().toISOString(),
+        user_id: req.user?.id || "", // Assuming user ID is available in req.user
+      };
+      logger.error(logData);
       next(error);
     }
   }
@@ -325,6 +445,26 @@ class UserController {
         user: updateUserData,
       });
     } catch (error) {
+      const logData = {
+        controller: "User profile password",
+        controller_name: "User Controller",
+        email: req.user?.email || "", // Assuming email is available in req.user
+        ip: req.ip,
+        level: "error",
+        log_type: "ERROR",
+        message: {
+          body_data: req.body,
+          error:
+            err.message ||
+            "Some error occurred while retrieving tutorials.",
+          //user_id: req.user?.id || "", // Assuming user ID is available in req.user
+        },
+        method_name: "updateProfilePassword",
+        //name: req.user?.name, // Assuming name is available in req.user
+        timestamp: new Date().toISOString(),
+        user_id: req.user?.id || "", // Assuming user ID is available in req.user
+      };
+      logger.error(logData);
       next(error);
     }
   }
@@ -363,6 +503,26 @@ class UserController {
         user: updateUserData,
       });
     } catch (error) {
+      const logData = {
+        controller: "User profile address",
+        controller_name: "User Controller",
+        email: req.user?.email || "", // Assuming email is available in req.user
+        ip: req.ip,
+        level: "error",
+        log_type: "ERROR",
+        message: {
+          body_data: req.body,
+          error:
+            err.message ||
+            "Some error occurred while retrieving tutorials.",
+          //user_id: req.user?.id || "", // Assuming user ID is available in req.user
+        },
+        method_name: "updateProfileAddress",
+        //name: req.user?.name, // Assuming name is available in req.user
+        timestamp: new Date().toISOString(),
+        user_id: req.user?.id || "", // Assuming user ID is available in req.user
+      };
+      logger.error(logData);
       next(error);
     }
   }
@@ -416,6 +576,26 @@ class UserController {
         });
       }
     } catch (error) {
+      const logData = {
+        controller: "User profile password",
+        controller_name: "User Controller",
+        email: req.user?.email || "", // Assuming email is available in req.user
+        ip: req.ip,
+        level: "error",
+        log_type: "ERROR",
+        message: {
+          body_data: req.body,
+          error:
+            err.message ||
+            "Some error occurred while retrieving tutorials.",
+          //user_id: req.user?.id || "", // Assuming user ID is available in req.user
+        },
+        method_name: "forgetPassword",
+        //name: req.user?.name, // Assuming name is available in req.user
+        timestamp: new Date().toISOString(),
+        user_id: req.user?.id || "", // Assuming user ID is available in req.user
+      };
+      logger.error(logData);
       next(error);
     }
   }
@@ -455,6 +635,26 @@ class UserController {
         .status(200)
         .json({ message: "User password has been recovered", statusCode: 200 });
     } catch (error) {
+      const logData = {
+        controller: "User profile update password",
+        controller_name: "User Controller",
+        email: req.user?.email || "", // Assuming email is available in req.user
+        ip: req.ip,
+        level: "error",
+        log_type: "ERROR",
+        message: {
+          body_data: req.body,
+          error:
+            err.message ||
+            "Some error occurred while retrieving tutorials.",
+          //user_id: req.user?.id || "", // Assuming user ID is available in req.user
+        },
+        method_name: "forgetUpdatePassword",
+        //name: req.user?.name, // Assuming name is available in req.user
+        timestamp: new Date().toISOString(),
+        user_id: req.user?.id || "", // Assuming user ID is available in req.user
+      };
+      logger.error(logData);
       next(error);
     }
   }
@@ -477,6 +677,26 @@ class UserController {
         .sort({ createdAt: -1 }); // Sort by 'createdAt' property in descending order
       return res.status(200).json(users);
     } catch (error) {
+      const logData = {
+        controller: "GET user liet",
+        controller_name: "User Controller",
+        email: req.user?.email || "", // Assuming email is available in req.user
+        ip: req.ip,
+        level: "error",
+        log_type: "ERROR",
+        message: {
+          body_data: req.body,
+          error:
+            err.message ||
+            "Some error occurred while retrieving tutorials.",
+          //user_id: req.user?.id || "", // Assuming user ID is available in req.user
+        },
+        method_name: "getUsersList",
+        //name: req.user?.name, // Assuming name is available in req.user
+        timestamp: new Date().toISOString(),
+        user_id: req.user?.id || "", // Assuming user ID is available in req.user
+      };
+      logger.error(logData);
       next(error);
     }
   }
