@@ -884,5 +884,15 @@ class UserController {
       next(error);
     }
   }
+
+  async getWalletDetails(req, res, next) {
+    try {
+      const data = await UserWallet.find({user: req.user._id});
+      return res.status(200).json({statusCode: 200, data})
+    }
+    catch(error) {
+      next(error)
+    }
+  }
 }
 module.exports = new UserController();

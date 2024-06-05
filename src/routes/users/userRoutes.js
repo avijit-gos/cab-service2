@@ -20,11 +20,13 @@ const {
   deleteProfile,
   deleteProfileStatus,
   updateUserProfile,
+  getWalletDetails
 } = require("../../controller/user/userController");
 const authentication = require("../../middleware/authentication");
 const verifyUserEmail = require("../../middleware/verifyUserEmail");
 const verifyAdmin = require("../../middleware/verifyAdmin");
 
+router.get("/get-wallet",authentication, getWalletDetails)
 /**
  * Route for user registration.
  * @name POST /api/user/register
@@ -194,5 +196,7 @@ router.get("/:id", verifyAdmin, getUserById);
 router.put("/delete-profile-status/:id", verifyAdmin, deleteProfileStatus);
 
 router.put("/update-profile", authentication, updateUserProfile);
+
+
 
 module.exports = router;
