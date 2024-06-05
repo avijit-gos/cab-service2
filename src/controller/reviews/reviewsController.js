@@ -104,16 +104,17 @@ class ReviewsController {
             const reviewData = await Reviews.findById(id);
             await Reviews.findByIdAndDelete(id);
             await Cars.findByIdAndUpdate(reviewData.car, {$pull: {reviews: id}}, {new: true});
-            return res.status(200).json({message: "Review successfully deleted", statusCode: 200})
+            return res.status(200).json({message: "Review successfully deleted", statusCode: 200});
         }
         catch(error) {
-            next(error)
+            next(error);
         }
     }
 
     async getBookingReview(req, res, next) {
         try{
-            const data = await Reviews.findOne({$and: [{car: req.params.carId}, {user: req.user._id}]})
+            const data = await Reviews.findOne({$and: [{car: req.params.carId}, {user: req.user._id}]});
+            return res.status(200).json({statusCode: 200, data})
         }
         catch(error) {
             next(error)

@@ -54,6 +54,6 @@ router.patch("/update/:id",Authentication, updateReview);
  */
 router.delete("/delete/:id",Authentication, deleteReview);
 
-router.get("/:carId", authentication, getBookingReview)
+router.get("/single/:carId", authentication, getBookingReview)
 
 module.exports = router;
